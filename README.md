@@ -10,9 +10,4 @@ Apart from the provided scripts, larger data files are made available in a corre
 
 ______
 
-BART/PEGASUS: https://github.com/BradLin0819/Automatic-Citation-Text-Generation-with-Citation-Intent-Control
-OPT/SciGen: https://github.com/Kel-Lu/SciGen
-CORWA: https://github.com/jacklxc/CORWA
-S2ORC: https://github.com/allenai/s2orc
-
 TODO: download data from cluster!
