@@ -1,6 +1,5 @@
 allennlp==2.10.0
 allennlp_models==2.10.0
-apex==0.9.10dev
 beautifulsoup4==4.11.1
 bert_score==0.3.11
 datasets==2.3.0
@@ -12,7 +11,6 @@ nltk==3.7
 numpy==1.22.2
 overrides==6.2.0
 pandas==1.4.1
-ptvsd==4.3.2
 requests==2.27.1
 rouge_score==0.0.4
 scikit_learn==1.1.2
