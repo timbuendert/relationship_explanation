@@ -1,0 +1,16 @@
+transformers==4.2.2
+sacrebleu
+scikit-learn
+tensorboard
+git-python==1.0.3
+beautifulsoup4
+tqdm
+nltk
+pandas
+datasets
+pytest
+rouge-score
+jsonlines
+six
+bert-score
+sentence-transformers

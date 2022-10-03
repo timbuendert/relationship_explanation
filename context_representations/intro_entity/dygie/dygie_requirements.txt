@@ -1,0 +1,18 @@
+# Usage: `pip install -r requirements.txt``
+# (or separately per package)
+sentence-transformers
+
+# Modeling
+allennlp==1.1.0
+allennlp_models==1.1.0
+
+# Data munging
+#pandas==0.25.2
+pandas
+beautifulsoup4==4.8.1
+lxml
+python-Levenshtein
+spacy 
+
+# Hyperparameter search
+optuna>=2.1.0
