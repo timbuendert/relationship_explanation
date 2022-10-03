@@ -10,7 +10,7 @@ parser.add_argument("--output_dir", type=str)
 args = parser.parse_args()
 
 
-# see: https://colab.research.google.com/github/huggingface/notebooks/blob/main/examples/language_modeling.ipynb#scrollTo=3R1RA5w5eZ5E
+# adapted from: https://colab.research.google.com/github/huggingface/notebooks/blob/main/examples/language_modeling.ipynb#scrollTo=3R1RA5w5eZ5E
 
 with open('texts.pkl', 'rb') as f:
     texts = pickle.load(f)    

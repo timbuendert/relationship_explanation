@@ -13,7 +13,7 @@ from sklearn.metrics import f1_score
 import pickle
 import copy
 
-# reference: https://github.com/marcellusruben/medium-resources/blob/main/Text_Classification_BERT/bert_medium.ipynb
+# Adapted from https://towardsdatascience.com/text-classification-with-bert-in-pytorch-887965e5820f (https://github.com/marcellusruben/medium-resources/blob/main/Text_Classification_BERT/bert_medium.ipynb)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_path", type=str)
