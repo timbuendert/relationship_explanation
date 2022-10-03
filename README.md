@@ -2,8 +2,9 @@
 
 This repository contains the practical implementations of the graduate thesis **"Explaining Relationships Between Academic Documents Using Generative Transformer Models"** as part of the *MSc. Data Science in Business and Economics* at *University of Tübingen*. In this work, a novel conditional context representation for the two papers is proposed which is evaluated across several state-of-the-art Transformer language models. For more details, please [contact me](mailto:tim.moritz.buendert@googlemail.com) to receive the entire thesis.
 
-create new environment, pip install requirements.txt
+To use the provided scripts, please create a new `Python 3` environment and execute ```pip install -r requirements.txt``` to install all packages and dependencies.
 
+______
 
 scierc.tar.gz in classification/dygie, context_representations/intro_entity: https://github.com/dwadden/dygiepp#pretrained-models
 joint_tagger_train_scibert_final.model in dataset_construction/2_CORWA: https://github.com/jacklxc/CORWA
@@ -20,6 +21,8 @@ data_preprocess /utils: https://github.com/BradLin0819/Automatic-Citation-Text-G
 classification.py: https://towardsdatascience.com/text-classification-with-bert-in-pytorch-887965e5820f
 
 TODO: download data from cluster!
+
+Find larger data files in [Google Drive Folder](https://drive.google.com/drive/folders/1uGxfWfnK_PtNfKEfuc2EbCuEQpZpjnQJ?usp=sharing)
 
 # Documentation for dataset construction pipeline (process)
 
