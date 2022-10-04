@@ -1,5 +1,6 @@
 # Context Representations
 
+This folder contains the code for constructing the different context representations which are used as input to the language model. While previous approaches used fixed portions of the principal and cited papers, this work argues that the conditional nature of the explanation task requires a more flexible method to represent both papers dependent upon each other. Therefore, we propose *conditional summaries* as a way to identify the most relevant sentences from both papers.
 
 ______
 

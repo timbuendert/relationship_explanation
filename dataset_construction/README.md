@@ -1,5 +1,7 @@
 # Dataset Construction
 
+This folder contains the code associated with the construction of our final data corpus. 
+
 
 ______
 

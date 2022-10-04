@@ -23,6 +23,3 @@ sbatch <<EOT
     --output_dir=${OUTPUT_DIR}
 
 EOT
-
-
-# 100gb, 45h

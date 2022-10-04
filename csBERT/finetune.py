@@ -1,4 +1,6 @@
-from transformers import AutoTokenizer, Trainer, TrainingArguments, AutoModel, DataCollatorForLanguageModeling, AutoModelForMaskedLM, AutoModelForNextSentencePrediction
+# adapted from: https://colab.research.google.com/github/huggingface/notebooks/blob/main/examples/language_modeling.ipynb#scrollTo=3R1RA5w5eZ5E
+
+from transformers import AutoTokenizer, Trainer, TrainingArguments, DataCollatorForLanguageModeling, AutoModelForMaskedLM
 from datasets import Dataset, DatasetDict
 import math
 import argparse
@@ -9,13 +11,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--output_dir", type=str)
 args = parser.parse_args()
 
-
-# adapted from: https://colab.research.google.com/github/huggingface/notebooks/blob/main/examples/language_modeling.ipynb#scrollTo=3R1RA5w5eZ5E
-
+# load data
 with open('texts.pkl', 'rb') as f:
     texts = pickle.load(f)    
 
-# create Dataset object
+# create Dataset object with corresponding splits
 dataset = Dataset.from_dict({'text': texts})
 train_dataset, validation_dataset = dataset.train_test_split(test_size=0.3, seed = 42).values()
 dataset = DatasetDict({'train': train_dataset, 'val': validation_dataset})
@@ -23,7 +23,7 @@ dataset = DatasetDict({'train': train_dataset, 'val': validation_dataset})
 
 # Load tokenizer and Model for  Masked-language Modelling
 tokenizer = AutoTokenizer.from_pretrained('allenai/scibert_scivocab_uncased', use_fast=True)
-model = AutoModelForMaskedLM.from_pretrained('allenai/scibert_scivocab_uncased') # AutoModel
+model = AutoModelForMaskedLM.from_pretrained('allenai/scibert_scivocab_uncased')
 
 
 # tokenize input texts
@@ -34,7 +34,7 @@ tokenized_datasets = dataset.map(tokenize_function, batched=True, remove_columns
 
 
 # create blocks of input tokens
-block_size = 128 # tokenizer.model_max_length
+block_size = 128
 def group_texts(examples):
     concatenated_examples = {k: sum(examples[k], []) for k in examples.keys()} # concatenate all texts
     total_length = len(concatenated_examples[list(examples.keys())[0]])
@@ -52,7 +52,7 @@ lm_datasets = tokenized_datasets.map(
     batch_size=1000
 )
 
-# setup training
+# setup for training
 training_args = TrainingArguments(
     args.output_dir,
     overwrite_output_dir = True,

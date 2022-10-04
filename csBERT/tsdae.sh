@@ -3,7 +3,7 @@
 INPUT_DIR=SciBERT-finetuned
 OUTPUT_DIR=SentenceCSBert
 BATCH_SIZE=2
-N=2
+N=-1
 
 sbatch <<EOT
 #!/bin/sh
