@@ -1,3 +1,5 @@
+# adapted from https://github.com/Kel-Lu/SciGen/blob/master/ft.py
+
 from __future__ import absolute_import, division, print_function
 
 import argparse
@@ -507,9 +509,8 @@ def main():
         torch.distributed.barrier()  # Barrier to make sure only the first process in distributed training download model & vocab
 
     config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
-    config = config_class.from_pretrained(args.model_name_or_path if args.model_name_or_path else args.model_type, #args.config_name if args.config_name else args.model_name_or_path,
+    config = config_class.from_pretrained(args.model_name_or_path if args.model_name_or_path else args.model_type,
                                           cache_dir=args.cache_dir if args.cache_dir else None)
-    #special_tokens = {'cite_token':'<|CITE|>' }
     special_tokens = {"additional_special_tokens": ["<|tgt|>"]}
     if args.context_style == 'intro_tfidf':
         special_tokens['additional_special_tokens'].append('<TFIDF>')
@@ -530,13 +531,13 @@ def main():
 
 
     #print(  args.tokenizer_path  )
-    tokenizer = tokenizer_class.from_pretrained(args.tokenizer_path, #args.tokenizer_name if args.tokenizer_name else args.tokenizer_path,
+    tokenizer = tokenizer_class.from_pretrained(args.tokenizer_path,
                                                 do_lower_case=args.do_lower_case,
                                                 cache_dir=args.cache_dir if args.cache_dir else None,
                                                 pad_token='<|PAD|>',
                                                 sep_token='<|SEP|>',
                                                 use_fast=False
-                                                )#additional_special_tokens=special_tokens,)
+                                                )
 
 
     tokenizer.add_special_tokens( special_tokens )

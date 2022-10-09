@@ -45,9 +45,9 @@ class DataPreprocessor:
                 
             else:
                 if cs_model == 'SciBERT':
-                    word_embedding_model = models.Transformer('allenai/scibert_scivocab_uncased', max_seq_length=512) #256
+                    word_embedding_model = models.Transformer('allenai/scibert_scivocab_uncased', max_seq_length=512)
                 else:
-                    word_embedding_model = models.Transformer(cs_model, max_seq_length=512) #256
+                    word_embedding_model = models.Transformer(cs_model, max_seq_length=512)
 
                 pooling_model = models.Pooling(word_embedding_model.get_word_embedding_dimension())
                 model_cs = SentenceTransformer(modules=[word_embedding_model, pooling_model])

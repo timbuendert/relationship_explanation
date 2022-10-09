@@ -1,5 +1,6 @@
 import pickle
 
+# load data
 with open(f'data/samples.pkl', 'rb') as f:
     samples = pickle.load(f)  
 
@@ -8,12 +9,16 @@ with open(f'data/labels.pkl', 'rb') as f:
 
 print(f'Number of labels loaded: {len([i for i in labels if i != -1])}')
 
-# list of mapping from duplicate explanations to indices
 exp = [s['explanation'] for s in samples]
 rem_idx = [exp.index('(Simons et al. 2010 : example 10)'), exp.index('(Jiang, Xu, and Liang 2017)')]  # samples for which there is no cond_sum input
 
+############
+idx = 12513 # index to be corrected!
 
-idx = 12513
+# background: to understand tools/papers -> use generation model trained on narrative_cite 
+# direct comparison: also extension -> use generation model trained on reflection
+############
+
 print(f'Previous label: {labels[idx]}')
 
 explanation = samples[idx]['explanation']
@@ -32,10 +37,8 @@ while l == '':
 
 labels[idx] = l  
 
+# export updated labels
 with open(f'data/labels.pkl', 'wb') as f:
     pickle.dump(labels, f)
 
 print(f'\nSuccessfully updated index {idx} to {labels[idx]}!')
-
-# background: to understand tools/papers -> use generation model trained on narrative_cite 
-# direct comparison: also extension -> use generation model trained on reflection

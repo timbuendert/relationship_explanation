@@ -1,3 +1,4 @@
+# adapted from https://github.com/Kel-Lu/SciGen/blob/master/val_generation.py
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -96,7 +97,7 @@ def sample_sequence(model, length, context, tokenizer, num_samples=1, temperatur
 
 
 def filter_output(text):
-    stop_tokens = ['<|endoftext|>'] #, '. ', '.•', '....']
+    stop_tokens = ['<|endoftext|>']
     counter_ex = ['i.e.', 'e.g.']
     
     found_idx = [text.find(t) for t in stop_tokens]
@@ -124,7 +125,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_type", default=None, type=str, required=True,
                         help="Model type selected in the list: " + ", ".join(MODEL_CLASSES.keys()))
-    parser.add_argument("--model_name_or_path", default=None, type=str, required=True) #,help="Path to pre-trained model or shortcut name selected in the list: " + ", ".join(ALL_MODELS))
+    parser.add_argument("--model_name_or_path", default=None, type=str, required=True)
     parser.add_argument("--tokenizer_path", default=None, type=str, required=False,
                         help="Path to the tokenizer")
     parser.add_argument("--base_dir", type=str, default="")
@@ -162,7 +163,7 @@ def main():
 
     args.model_type = args.model_type.lower()
     model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
-    tokenizer = tokenizer_class.from_pretrained(args.model_type,  truncation = True) # args.tokenizer_path
+    tokenizer = tokenizer_class.from_pretrained(args.model_type,  truncation = True)
     
     special_tokens = {"additional_special_tokens": ["<|tgt|>"], 'sep_token': '<|SEP|>', 'pad_token': '<|PAD|>'}
     if args.input_type == 'intro_tfidf':
@@ -222,6 +223,8 @@ def main():
 
 
             sep_token_ind = tokenizer.convert_tokens_to_ids('<|SEP|>')
+
+            # adapt sequence if too long
             if len(context_tokens) > 1024-(args.length+3):
                 n_remove_tokens = len(context_tokens) - (1024-(args.length+3))
                 ind_doc = context_tokens.index(sep_token_ind)
@@ -248,7 +251,6 @@ def main():
                     print(f'Sep token index is {sep_index}')
                 context_tokens.pop(sep_index)
                 
-            #context_tokens = tokenizer.encode(raw_text, add_special_tokens=False)
             out = sample_sequence(
                 model=model,
                 context=context_tokens,
@@ -265,7 +267,7 @@ def main():
 
             for o in out:
                 text = tokenizer.decode(o, clean_up_tokenization_spaces=True)
-                #text = filter_output(text) #text[: text.find(args.stop_token) if args.stop_token else None]
+                text = filter_output(text)
             target = tokenizer.decode( target_tokens, clean_up_tokenization_spaces=True)
             target_lst.append( target.replace('<|endoftext|>', '') )             
             output_lst.append(text)
@@ -280,6 +282,7 @@ def main():
                 w.write( item + '\n')
 
 
+    # evaluate
     rouges = ['rouge1', 'rougeL']
     scorer = rouge_scorer.RougeScorer(rouges, use_stemmer=True)
     scores = [scorer.score(target_lst[i], output_lst[i]) for i in range(len(output_lst))]

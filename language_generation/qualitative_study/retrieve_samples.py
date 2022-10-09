@@ -7,17 +7,18 @@ argparser.add_argument('--n_samples', type=int)
 argparser.add_argument('--seed', type=int)
 args = argparser.parse_args()
 
+# fix random sampling
 random.seed(args.seed)
 
 ind_outputs = [random.randint(0, 2475) for _ in range(0, args.n_samples)]
-print(dict(zip(list(range(1, len(ind_outputs) +1)), ind_outputs)))
+#print(dict(zip(list(range(1, len(ind_outputs) +1)), ind_outputs)))
 
-
+# load all contents of test set
 contents = pd.read_json(path_or_buf=f'../final_dataset/data/reflection_test.jsonl', lines=True)
 
 output_string, output_string_solution = [], []
 
-
+# directly add LaTeX code
 output_string.append(
 '''
 \\documentclass[12pt,twoside,a4paper]{article}
@@ -145,14 +146,14 @@ This document presents an essential part of the master thesis \\textit{"Explaini
 \\newgeometry{left=1.5cm, bottom=1.5cm, top=1.5cm, right=1.5cm}
 ''')
 
-
+# evaluate all three context representations
 models = {'OPT - Cond. Sum.': f"OPT/outputs/eval_reflection_cond_sum_1_5.outputs",
           'OPT - Title-Abs': f"OPT/outputs/eval_reflection_title_abs.outputs",
           'OPT - Intro-Entity': f"OPT/outputs/eval_reflection_intro_entity.outputs",
           }
 
 
-
+# retrieve samples
 for n, ind in enumerate(ind_outputs):
     outputs = []
     with open(f"../contexts_reflection/cond_sum/test.target", "r") as tgt:
@@ -258,12 +259,12 @@ output_string_solution.append(
 \\end{document}
 ''')
 
-
+# output survey
 with open(f'qualitative_study.tex', 'w') as fout:
     for i in range(len(output_string)):
         fout.write(output_string[i])
 
-
+# output survey with corresponding context representations
 with open(f'qualitative_study_solution.tex', 'w') as fout:
     for i in range(len(output_string_solution)):
         fout.write(output_string_solution[i])

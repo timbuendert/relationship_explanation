@@ -1,9 +1,4 @@
-
-"""
-Fine-tuning the library models for language modeling on a text file (GPT, GPT-2, BERT, RoBERTa).
-GPT and GPT-2 are fine-tuned using a causal language modeling (CLM) loss while BERT and RoBERTa are fine-tuned
-using a masked language modeling (MLM) loss.
-"""
+# adapted from https://github.com/Kel-Lu/SciGen/blob/master/ft.py
 
 from __future__ import absolute_import, division, print_function
 
@@ -29,8 +24,7 @@ except:
 from tqdm import tqdm, trange
 
 from transformers import (WEIGHTS_NAME, AdamW, get_linear_schedule_with_warmup,
-                                  GPT2Config, GPT2LMHeadModel, GPT2Tokenizer,
-                                )
+                          GPT2Config, GPT2LMHeadModel, GPT2Tokenizer)
 
 logger = logging.getLogger(__name__)
 
@@ -141,7 +135,7 @@ def load_and_cache_examples(args, tokenizer, evaluate=False):
         if n!= 0:
             dataset.examples = dataset.examples[:-n]
     
-    #Evaluate; cap it at max_eval_steps. "Shuffle" it, but keep the seed static so its consistent I guess. Super hacky.
+    #Evaluate; cap it at max_eval_steps. "Shuffle" it, but keep the seed static so its consistent
     else:
         eval_rng = np.random.RandomState(2)
         eval_rng.shuffle( dataset.examples )
@@ -363,7 +357,6 @@ def evaluate(args, model, tokenizer, prefix=""):
     model.eval()
 
     for batch in tqdm(eval_dataloader, desc="Evaluating"):
-        #inputs, labels = mask_tokens(batch, tokenizer, args) if args.mlm else (batch, batch)
         splits = torch.split( batch, 1, dim = 1)
         inputs, labels, mask = splits
         inputs = inputs.to(args.device)
@@ -510,9 +503,8 @@ def main():
         torch.distributed.barrier()  # Barrier to make sure only the first process in distributed training download model & vocab
 
     config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
-    config = config_class.from_pretrained(args.model_name_or_path if args.model_name_or_path else args.model_type, #args.config_name if args.config_name else args.model_name_or_path,
+    config = config_class.from_pretrained(args.model_name_or_path if args.model_name_or_path else args.model_type,
                                           cache_dir=args.cache_dir if args.cache_dir else None)
-    #special_tokens = {'cite_token':'<|CITE|>' }
     special_tokens = {"additional_special_tokens": ["<|tgt|>"]}
     if args.context_style == 'intro_tfidf':
         special_tokens['additional_special_tokens'].append('<TFIDF>')
@@ -528,12 +520,12 @@ def main():
 
 
     #print(  args.tokenizer_path  )
-    tokenizer = tokenizer_class.from_pretrained(args.model_type, #args.tokenizer_name if args.tokenizer_name else args.tokenizer_path,
+    tokenizer = tokenizer_class.from_pretrained(args.model_type,
                                                 do_lower_case=args.do_lower_case,
                                                 cache_dir=args.cache_dir if args.cache_dir else None,
                                                 pad_token='<|PAD|>',
                                                 sep_token='<|SEP|>',
-                                                )#additional_special_tokens=special_tokens,)
+                                                )
 
     tokenizer.add_special_tokens( special_tokens )
 

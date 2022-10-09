@@ -3,6 +3,8 @@ import pandas as pd
 import gc
 
 explanations, discourses, principal_titles = [], [], []
+
+# load all data
 for i in range(4):
     samples = pd.read_json(path_or_buf=f'../final_dataset/dataset_cs{i}.json')
     explanations += list(samples['explanation'])

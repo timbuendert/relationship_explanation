@@ -11,15 +11,16 @@ argparser.add_argument('--n_samples', type=int)
 argparser.add_argument('--seed', type=int)
 args = argparser.parse_args()
 
+# fix random sampling
 random.seed(args.seed)
 
 
 intent_lengths = {'single_summ': 64003, 'reflection': 2475} # number of test examples from which can be sampled
-scrs = [] # [[] for _ in range(len(intent_lengths.keys()))]
+scrs = []
 targets = []
 outputs = [[] for _ in range(len(intent_lengths.keys()))]
 
-# output arguments
+# generation arguments
 n_samples = 1
 samples_length = 55
 temperature = 1.0
@@ -108,12 +109,11 @@ def generate_output_scigpt2(model_path, samples_length):
 
 # get n_samples many context samples per intent
 for n, intent in enumerate(intent_lengths.keys()):
-    ind_samples = [random.randint(0, intent_lengths[intent]) for _ in range(0, args.n_samples)] #.sort()
+    ind_samples = [random.randint(0, intent_lengths[intent]) for _ in range(0, args.n_samples)]
     with open(f"../contexts_{intent}/{args.context}/test.source", "r") as src:
         n_counter = 0
         for line in src:
             if n_counter in ind_samples:
-                #srcs[n].append(line)
                 scrs.append(line)
             n_counter += 1
 
@@ -135,7 +135,6 @@ for n, intent in tqdm(enumerate(intent_lengths.keys())):
     if args.model == 'BART':
         path = f"BART/models/bart_{intent}_{args.context}"
 
-#        from BART.transformers_src.utils import (use_task_specific_params)
         from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
         def chunks(lst, n):
@@ -153,7 +152,6 @@ for n, intent in tqdm(enumerate(intent_lengths.keys())):
         model = AutoModelForSeq2SeqLM.from_pretrained(path.replace('pytorch_model.bin', '')).to(device)
         model.eval()
         tokenizer = AutoTokenizer.from_pretrained(path.replace('pytorch_model.bin', ''))
-        # add_special_tokens_(model, tokenizer)
 
         use_task_specific_params(model, 'summarization') # update config with task specific params
         prefix = None
@@ -256,7 +254,7 @@ for n, intent in tqdm(enumerate(intent_lengths.keys())):
 
             for o in out:
                 text = tokenizer.decode(o, clean_up_tokenization_spaces=True)
-                text = filter_output(text) #text[: text.find(args.stop_token) if args.stop_token else None]
+                text = filter_output(text)
             outputs[n].append(text.replace('#', '\#').replace('_', '\_').replace('%', '\%'))
 
     else:

@@ -1,3 +1,4 @@
+# adapted from https://github.com/Kel-Lu/SciGen/blob/master/val_generation.py
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -58,6 +59,7 @@ def top_k_top_p_filtering(logits, top_k=0, top_p=0.0, filter_value=-float('Inf')
 
         # Remove tokens with cumulative probability above the threshold
         sorted_indices_to_remove = cumulative_probs > top_p
+
         # Shift the indices to the right to keep also the first token above the threshold
         sorted_indices_to_remove[..., 1:] = sorted_indices_to_remove[..., :-1].clone()
         sorted_indices_to_remove[..., 0] = 0
@@ -90,8 +92,7 @@ def sample_sequence(model, length, context, num_samples=1, temperature=1, top_k=
                 next_token = torch.argmax(filtered_logits, dim=-1).unsqueeze(-1)
             else:
                 next_token = torch.multinomial(F.softmax(filtered_logits, dim=-1), num_samples=1)
-            #if next_token == tokenizer.convert_tokens_to_ids('<|endoftext|>'): #####
-            #    return generated
+
             generated = torch.cat((generated, next_token), dim=1)
     return generated
 
@@ -125,7 +126,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_type", default=None, type=str, required=True,
                         help="Model type selected in the list: " + ", ".join(MODEL_CLASSES.keys()))
-    parser.add_argument("--model_name_or_path", default=None, type=str, required=True) #,help="Path to pre-trained model or shortcut name selected in the list: " + ", ".join(ALL_MODELS))
+    parser.add_argument("--model_name_or_path", default=None, type=str, required=True)
     parser.add_argument("--tokenizer_path", default=None, type=str, required=False,
                         help="Path to the tokenizer")
     parser.add_argument("--base_dir", type=str, default="")
@@ -230,7 +231,9 @@ def main():
 
 
             sep_token_ind = tokenizer.convert_tokens_to_ids('<|SEP|>')
-            if len(context_tokens) > 1024-(args.length+3):  #+1
+
+            # adapt sequence if too long
+            if len(context_tokens) > 1024-(args.length+3):
                 n_remove_tokens = len(context_tokens) - (1024-(args.length+3))
                 ind_doc = context_tokens.index(sep_token_ind)
                 len_princ = len(context_tokens[:ind_doc])
@@ -250,8 +253,7 @@ def main():
 
                 context_tokens = context_tokens[:(ind_doc-remove_princ)] + context_tokens[(ind_doc):-(1+remove_cited)] + [context_tokens[-1]]
     
-                
-            #context_tokens = tokenizer.encode(raw_text, add_special_tokens=False)
+            # generate output
             out = sample_sequence(
                 model=model,
                 context=context_tokens,
@@ -266,10 +268,9 @@ def main():
             out = out[:, len(context_tokens):].tolist()
 
 
-            for n_o, o in enumerate(out): ##
+            for n_o, o in enumerate(out):
                 text = tokenizer.decode(o, clean_up_tokenization_spaces=True)
-                text = filter_output(text) #text[: text.find(args.stop_token) if args.stop_token else None]
-                #print(f'{n_o}: {text}') ##
+                text = filter_output(text)
             target = tokenizer.decode( target_tokens, clean_up_tokenization_spaces=True)
             target_lst.append( target.replace('<|endoftext|>', '') )             
             output_lst.append(text)
@@ -286,10 +287,10 @@ def main():
             for item in output_lst:
                 w.write( item + '\n')
 
+    # evaluate 
     rouges = ['rouge1', 'rougeL']
     scorer = rouge_scorer.RougeScorer(rouges, use_stemmer=True)
     scores = [scorer.score(target_lst[i], output_lst[i]) for i in range(len(output_lst))]
-    #print(scores)
     
     avg_scores = []
     for r in rouges:
@@ -298,7 +299,6 @@ def main():
         prec = np.mean([r_scores[i].precision for i in range(len(r_scores))])
         rec = np.mean([r_scores[i].recall for i in range(len(r_scores))])
         avg_scores.append({'Score': r, 'Avg. F1': f1, 'Avg. Precision': prec, 'Avg. Recall': rec})
-        #print(avg_scores[-1])
 
     print('Rouge Scores:\n{}'.format(avg_scores))
 

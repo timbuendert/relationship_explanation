@@ -17,18 +17,18 @@ def find_dup_label(idx):
             original_idx = dup_exp[k][0]
     return labels[original_idx]
 
+# load data
 with open(f'data/samples.pkl', 'rb') as f:
     samples = pickle.load(f)  
 
 try:
-    with open(f'data/labels.pkl', 'rb') as f:
+    with open(f'data/labels.pkl', 'rb') as f: # load existing labels
         labels = pickle.load(f)
 except FileNotFoundError:
     labels = [-1] * len(samples)
 
 print(f'Number of labels loaded: {len([i for i in labels if i != -1])}')
 
-# list of mapping from duplicate explanations to indices
 exp = [s['explanation'] for s in samples]
 rem_idx = [exp.index('(Simons et al. 2010 : example 10)'), exp.index('(Jiang, Xu, and Liang 2017)')]  # samples for which there is no cond_sum input
 
@@ -44,7 +44,9 @@ dup_cont_idx = [item for sublist in dup_cont.values() for item in sublist]
 ####################################################
 ####################################################
 
-method = 1 # narrative_cite and reflection only
+# labelling methods
+
+method = 1 # narrative_cite and reflection only (easier to label)
 #method = 2 # all other intents
 #method = 3 # duplicate ones
 
@@ -106,7 +108,7 @@ for i in range(len(samples)):
         for e in ind_sample:
             labels[e] = l
         
-
+# export labels
 with open(f'data/labels.pkl', 'wb') as f:
     pickle.dump(labels, f)
 

@@ -1,3 +1,5 @@
+# Adapted from https://towardsdatascience.com/text-classification-with-bert-in-pytorch-887965e5820f (https://github.com/marcellusruben/medium-resources/blob/main/Text_Classification_BERT/bert_medium.ipynb)
+
 from collections import Counter
 import torch
 import numpy as np
@@ -13,8 +15,6 @@ from sklearn.metrics import f1_score
 import pickle
 import copy
 
-# Adapted from https://towardsdatascience.com/text-classification-with-bert-in-pytorch-887965e5820f (https://github.com/marcellusruben/medium-resources/blob/main/Text_Classification_BERT/bert_medium.ipynb)
-
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_path", type=str)
 parser.add_argument("--context", type=str)
@@ -25,6 +25,7 @@ args = parser.parse_args()
 tgt_path = f'classifications/{args.context}'
 os.makedirs(tgt_path, exist_ok=True)
 
+# load data
 
 with open(f'data/labels.pkl', 'rb') as f:
     labels = pickle.load(f)  
@@ -57,7 +58,7 @@ print(f'Number of non-duplicate samples: {df_labels.shape[0]}')
 counter = Counter(df_labels['label'])
 print(f'Class distribution: {counter}')
 
-
+# create dataset partitions
 np.random.seed(112)
 df_train, df_val, df_test = np.split(df_labels.sample(frac=1, random_state=42), 
                                      [int(.6*len(df_labels)), int(.8*len(df_labels))])
@@ -94,25 +95,19 @@ class Dataset(torch.utils.data.Dataset):
 
         return batch_texts, batch_y
 
-
+# create classifier
 class CS_Classifier(nn.Module):
     def __init__(self, dropout=0.5):
         super(CS_Classifier, self).__init__()
         self.lm = AutoModel.from_pretrained(args.model_path)
         self.dropout = nn.Dropout(dropout)
         self.linear = nn.Linear(768, len(classes))
-        #self.relu = nn.ReLU()
-
 
     def forward(self, input_id, mask):
         _, pooled_output = self.lm(input_ids=input_id, attention_mask=mask, return_dict=False) # pooler output
-        
         dropout_output = self.dropout(pooled_output)
-        # add additional feed-forward layer here?
         linear_output = self.linear(dropout_output)
-
         final_layer = F.softmax(linear_output, dim=-1)
-
         return final_layer
 
 
@@ -135,6 +130,7 @@ def train(model, train_data, val_data, learning_rate, epochs):
     val_losses = []
     best_val_loss = 100
 
+    # training
     for epoch_num in range(epochs):
         total_acc_train = 0
         total_loss_train = 0
@@ -212,6 +208,8 @@ def evaluate(model, test_data):
 
     total_acc_test = 0
     total_f1_test = 0
+
+    # evaluation
     with torch.no_grad():
         for test_input, test_label in test_dataloader:
             test_label = test_label.to(device)

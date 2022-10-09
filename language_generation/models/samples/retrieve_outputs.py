@@ -1,4 +1,3 @@
-import os
 import random
 import argparse
 import pandas as pd
@@ -10,6 +9,7 @@ argparser.add_argument('--model_comparisons', action='store_true')
 
 args = argparser.parse_args()
 
+# fix random sampling
 random.seed(args.seed)
 
 models = ['SciGen', 'SciGPT2', 'OPT', 'BART', 'PEGASUS']
@@ -20,6 +20,7 @@ contents = pd.read_json(path_or_buf=f'../final_dataset/data/reflection_test.json
 
 output_string = []
 
+# go through all models and context combinations to retrieve samples
 for m in models:
     for n_c, c in enumerate(contexts):
         c_text = c.replace('_', '\_')
@@ -74,6 +75,6 @@ for m in models:
     ''')
 
 
-    with open(f'qualitative_samples_{args.n_samples}.tex', 'w') as fout:
-        for i in range(len(output_string)):
-            fout.write(output_string[i])
+with open(f'qualitative_samples_{args.n_samples}.tex', 'w') as fout:
+    for i in range(len(output_string)):
+        fout.write(output_string[i])
