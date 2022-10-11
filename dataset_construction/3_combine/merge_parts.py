@@ -41,6 +41,7 @@ if not args.filter:
     c_discourses = Counter(samples['discourse'])
     c_spantype = Counter(samples['span_type'])
 
+    # print distributions
     print([(i, c_discourses[i] / len(samples['discourse']) * 100.0, c_discourses[i]) for i, count in c_discourses.most_common(10)])
     print([(i, c_spantype[i] / len(samples['span_type']) * 100.0, c_spantype[i]) for i, count in c_spantype.most_common()], '\n')
 
@@ -51,8 +52,7 @@ if not args.filter:
         print([(i, counter_st[i] / len(span_types_discourse) * 100.0, counter_st[i]) for i, _ in counter_st.most_common()])
 
 
-if args.filter:
-    # Filter citations per intent
+if args.filter: # Filter citations per intent
 
     output_name = str(args.intent).lower()
     
@@ -73,5 +73,3 @@ if args.filter:
 
     with open(f'data/{output_name}_splits_idx.pkl', 'wb') as f:
         pickle.dump(splits_idx, f)
-
-# -> run bi-parte matching pipeline and train model!

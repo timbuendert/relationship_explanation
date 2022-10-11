@@ -14,6 +14,8 @@ parser.add_argument("--n", default=None, type=int, required=True)
 args = parser.parse_args()
 
 print(f'File {args.n} is processed:')
+
+# load data
 meta = pd.read_json(path_or_buf=f'../CS_papers/data/metadata_full{args.n}.jsonl', lines=True, dtype= {'paper_id': str})
 pdf = pd.read_json(path_or_buf=f'../CS_papersdata/pdf_parses_full{args.n}.jsonl', lines=True, dtype= {'paper_id': str})
 

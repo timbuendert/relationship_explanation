@@ -13,6 +13,7 @@ dataset_types = {'train': args.n_train, 'val': args.n_val, 'test': args.n_test}
 src_path = f'{args.type}/chunks'
 file_types = ['source', 'target']
 
+# load and combine
 for dataset_type in tqdm(dataset_types.keys()):
     for file_type in file_types:
         with open(f"{args.type}/{dataset_type}.{file_type}", "w") as f_all:

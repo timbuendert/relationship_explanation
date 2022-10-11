@@ -3,6 +3,8 @@ import pickle
 
 metadata, pdfs = [], []
 url_regex = re.compile("'.*'$")
+
+# retrieve urls from credentials text file
 with open('S2ORC/current_credentials.txt') as cred:
     for line in cred:
         if len(line) < 10:

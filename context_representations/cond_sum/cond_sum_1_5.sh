@@ -36,10 +36,3 @@ sbatch <<EOT
     --outfile_type=hf
 
 EOT
-
-# sh cond_sum_1_5.sh {train|val|test}
-
-#Full shape: (12375, 11)
-#Train: (7425, 11)
-#Val: (2475, 11)
-#Test: (2475, 11)

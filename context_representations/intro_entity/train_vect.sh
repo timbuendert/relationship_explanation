@@ -14,12 +14,9 @@ sbatch <<EOT
 #SBATCH --mem=500gb
 #SBATCH --time=12:00:00
 
-
 #SBATCH --mail-user=tim-moritz.buendert@student.uni-tuebingen.de
 #SBATCH --mail-type=BEGIN,END,FAIL
 
 ../../python_env_dygie/bin/python3 train_vect.py --intent=${INTENT}
 
 EOT
-
-# mem=80gb

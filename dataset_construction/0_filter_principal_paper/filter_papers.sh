@@ -22,5 +22,4 @@ sbatch <<EOT
 
 ../python_env/bin/python3 0_filter_papers.py --batches-start=${START} --batches-end=${END} --n=$1
 
-# scripts from 0-9 (non-cited)
 EOT

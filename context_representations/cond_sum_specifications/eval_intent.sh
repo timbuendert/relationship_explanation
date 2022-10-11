@@ -25,5 +25,3 @@ sbatch <<EOT
     --cond_sum_analysis
 
 EOT
-
-# sh eval_intent.sh 2_3_t

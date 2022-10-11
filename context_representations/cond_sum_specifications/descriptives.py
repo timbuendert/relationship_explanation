@@ -31,6 +31,7 @@ n_sentences = [1,2,5]
 n_matches = [3,5,8]
 title = ['_t','']
 
+# go through all cond-sum specifications and retrieve descriptive statistics
 for s in n_sentences:
     for m in n_matches:
         for t in title:

@@ -18,7 +18,6 @@ data = list(load_data(f'../../final_dataset/data/dataset_{args.intent}.jsonl'))
 print('Successfully loaded data')
 
 
-
 ## Regular TFIDF-Vectorizer
 alltexts = [' '.join([sample['cited_text'][i]['text'] for i in range(len(sample['cited_text']))]) for sample in data]
 alltexts += [' '.join([sample['principal_text'][i]['text'] for i in range(len(sample['principal_text']))]) for sample in data]

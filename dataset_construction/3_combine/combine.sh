@@ -21,6 +21,4 @@ sbatch <<EOT
 
 ../python_env/bin/python3 4_combine_final.py --start=${START} --end=${END} --n=$1
 
-# total: 1,634,806 -> with SPLIT = 500,000: 0,1,2 & 3: 1500000 to 1634806
-
 EOT

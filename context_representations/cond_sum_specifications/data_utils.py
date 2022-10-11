@@ -1,16 +1,14 @@
-import os
+# adapted from https://github.com/BradLin0819/Automatic-Citation-Text-Generation-with-Citation-Intent-Control/blob/main/utils/scicite_data_utils.py
+
 import re
-import math
 import json
-from sklearn.feature_extraction.text import TfidfVectorizer
+from nltk.tokenize import sent_tokenize
+import numpy as np
+import torch
+from sentence_transformers import util
+
 #import spacy
-#from intro_entity.dygie.spacy_interface.spacy_interface import DygieppPipe
-
-#import scispacy
-
-
-#nlp = spacy.load('en_core_sci_lg')
-
+#from intro_entity.dygie.spacy_interface.spacy_interface import DygieppPipe # requires different Python version
 
 def load_data(data_path):
     with open(data_path, "r") as f:
@@ -56,10 +54,6 @@ def process_ieee_citation(text):
 
 def process_reference_marker(text):
 
-    #bad_string = '(Boroditsky, 2000; Singer et al., 2004 Singer et al., , 2006 Aziz-Zadeh et al., 2006; Gibbs, 2006; Wilson and Gibbs, 2007; Casasanto, 2008; Boulenger et al., 2009; IJzerman and Semin, 2009; Schubert and Koole, 2009; Landau et al., 2010; Sapolsky, 2010; Desai et al., 2011; Schwarz, 2011, 2012; Saygin et al., 2011; Fay and Maner, 2012; Mattingly and Lewandowski, 2013; Pitts et al., 2013; Deckman et al., 2014; Galinsky et al., 2014; Knowles et al., 2014; Masicampo and Ambady, 2014; Sassenrath et al., 2014; Schoel et al., 2014; Slepian et al., 2014; Stellar and Willer, 2014 '
-    #if bad_string in text:
-    #    text = text.replace(bad_string, "#REF")
-
     # Handle IEEE citation
     processed_text = process_ieee_citation(text)
 
@@ -96,7 +90,6 @@ def process_reference_marker(text):
 
 # preprocess citing or cited input content
 
-
 def process_source_input(text):
     text = text.replace(
         '\n', ' ').replace("\r", " ").strip().lower()
@@ -129,17 +122,7 @@ def is_valid_citation_text(text):
 def list2text(string, cat):
     return ' '.join([string[cat][i]['text'] for i in range(len(string[cat]))])
 
-#######################################################################################################################################
-
-import pandas as pd
-from nltk.tokenize import sent_tokenize
-import numpy as np
-import torch
-from sentence_transformers import util
-#from thefuzz import process
-from sentence_transformers import SentenceTransformer, models
-
-############### Helper functions 
+############### Helper functions for context representations
 
 def text2sentences(text: str):
     sentences = sent_tokenize(text)
@@ -174,8 +157,7 @@ def process_output_comp(sel_sent, doc):
     sel_sentences = [s for n,s in enumerate(sentences) if n in sel_idx]
     return ' '.join(sel_sentences)
 
-def process_output(sentences, max_idx, n_sentences): # input sentences1 or ?max_indices 
-    #sentences = text2sentences(doc)
+def process_output(sentences, max_idx, n_sentences):
     n_s = len(sentences)
 
     all_seq = [list(range(a,a+n_sentences)) for a in range(n_s-(n_sentences-1) +1)]
@@ -186,15 +168,8 @@ def process_output(sentences, max_idx, n_sentences): # input sentences1 or ?max_
         except IndexError:
             print(j, all_seq, n_s)
     sel_idx = list(set(sel_idx))
-    #print(sel_idx)
 
     sel_sentences = [s for n,s in enumerate(sentences) if n in sel_idx]
-
-    #for n,s in enumerate(sentences):
-    #    if n in sel_idx:
-    #        print(s, '\n')
-    
-    #print(' '.join(sel_sentences))
 
     return ' '.join(sel_sentences)
 
@@ -225,7 +200,6 @@ def check_token(token, exst_tokens):
 
     
 def get_top_tf_idf_words(response, feature_names, top_n=2, exst_tokens = None):
-    #sorted_nzs = np.argsort(response.data)[:-(top_n+100):-1]
     sorted_nzs = np.argsort(response.data)[::-1]
     rel_tokens = list(feature_names[response.indices[sorted_nzs]])
     tokens = [t for t in rel_tokens if check_token(t, exst_tokens)][:top_n] #100
@@ -253,16 +227,14 @@ def cond_summaries(doc1: str, doc2: str, model, n_sentences = 1, n_matches = 1, 
         sentences1 = [' '.join(sentences1[n:n + n_sentences]) for n in range(len(sentences1))]
         sentences2 = [' '.join(sentences2[n:n + n_sentences]) for n in range(len(sentences2))]
 
-    n_matches = min(min(len(sentences1), len(sentences2)), n_matches) # min((len(sentences1) * len(sentences2)), n_matches) ?
+    n_matches = min(min(len(sentences1), len(sentences2)), n_matches)
     
     embeddings1 = model.encode(sentences1, convert_to_tensor=True)
     embeddings2 = model.encode(sentences2, convert_to_tensor=True)
  
-    cosine_scores = util.cos_sim(embeddings1, embeddings2) # or via normalizing vetors & dot_product -> more efficient?
-    # print(cosine_scores)
+    cosine_scores = util.cos_sim(embeddings1, embeddings2)
     
-    if agg_mode is not None: # or average/sum over all cosine similarities of other doc with this one sentence?
-        # worth experimenting
+    if agg_mode is not None: # or average/sum over all cosine similarities of other doc with this one sentence
         if agg_mode == 'mean':
             agg_doc1 = torch.mean(cosine_scores, dim = 1) # or sum
             agg_doc2 = torch.mean(cosine_scores, dim = 0) # or sum
@@ -272,94 +244,40 @@ def cond_summaries(doc1: str, doc2: str, model, n_sentences = 1, n_matches = 1, 
             
         _, idx_1 = torch.topk(agg_doc1, n_matches)
         _, idx_2 = torch.topk(agg_doc2, n_matches)
-        
-        #sel_sent1 = [sentences1[idx_1[j]] for j in range(len(idx_1))]
-        #sel_sent2 = [sentences2[idx_2[k]] for k in range(len(idx_2))]
     
     
     elif semantic_search == True:
-        # semantic search (https://www.youtube.com/watch?v=ewlCCB7EFPs; https://www.sbert.net/examples/applications/semantic-search/README.html)
-        #embeddings1 = embeddings1.to('cuda')
+        # semantic search (https://www.sbert.net/examples/applications/semantic-search/README.html)
         embeddings1 = util.normalize_embeddings(embeddings1)
-        #embeddings2 = embeddings2.to('cuda')
         embeddings2 = util.normalize_embeddings(embeddings2)
         
-        # can add following parameters: query_chunk_size, corpus_chunk_size, score_function
         hits = util.semantic_search(embeddings1, embeddings2, score_function=util.dot_score, top_k = n_matches)
         
         scores = [hits[j][0]['score'] for j in range(len(hits))]
         sort_indices = np.array(scores).argsort().tolist()[::-1]
         idx_1 = sort_indices[:n_matches]
         idx_2 = [hits[i][0]['corpus_id'] for i in idx_1]
-        
-        #sel_sent1 = [sentences1[idx_1[j]] for j in range(len(idx_1))]
-        #sel_sent2 = [sentences2[idx_2[k]] for k in range(len(idx_2))]
             
     
     else:
         _, i = torch.topk(cosine_scores.flatten(), n_matches) # or see: https://www.sbert.net/docs/usage/semantic_textual_similarity.html
         max_indices = np.array(np.unravel_index(i.cpu().numpy(), cosine_scores.shape)).T        
-
-        # for case n = 1: 
-        #max_value = torch.amax(cosine_scores)
-        #max_indices = (cosine_scores == max_value).nonzero(as_tuple=True)
-                        
-        sel_sent1 = [sentences1[max_indices[j,0]] for j in range(max_indices.shape[0])]
-        sel_sent2 = [sentences2[max_indices[k,1]] for k in range(max_indices.shape[0])]
-
+                
         idx_1 = max_indices[:,0]
         idx_2 = max_indices[:,1]
             
-
     cond_sent1 = process_output(text2sentences(doc1), idx_1, n_sentences) #doc1
     cond_sent2 = process_output(text2sentences(doc2), idx_2, n_sentences)
 
-    
     return cond_sent1, cond_sent2
 
 
 def get_context_input(data, model, tfidf, entity, strategy: str, n_match = 1, n_sentence = 1, title = False):
 
-    if strategy == 'intro_abs':
-        #sections_doc1 = list(set([data['citingBody'][i]['section'] for i in range(len(data['citingBody']))]))
-        #intro_section = sections_doc1[0]
-        #for s in sections_doc1:
-        #    if 'intro' in s.lower():
-        #        intro_section = s
-
-        # or: intro_text = [ item for item in js_dict['grobid_parse']['body_text'] if item["section"] and "intro" in item["section"].lower() ]
-        sen1 = ' '.join([data['citingBody'][i]['text'] for i in range(len(data['citingBody'])) if 'introduction' in data['citingBody'][i]['section'].lower()])
-        #sen1 = ' '.join([data['citingBody'][i]['text'] for i in range(len(data['citingBody'])) if data['citingBody'][i]['section'] == intro_section])
-
-        sen2 = ' '.join([data['citedAbstract'][i]['text'] for i in range(len(data['citedAbstract']))])
-
-    elif strategy == 'title_abs':
+    if strategy == 'title_abs':
         sen1 = data['citingTitle']
         sen2 = ' '.join([data['citedAbstract'][i]['text'] for i in range(len(data['citedAbstract']))])
-
-    elif strategy == 'intro_tfidf':
-        #sections_doc1 = list(set([data['citingBody'][i]['section'] for i in range(len(data['citingBody']))]))
-        #intro_section = sections_doc1[0]
-        #for s in sections_doc1:
-        #    if 'intro' in s.lower():
-        #        intro_section = s
-
-        sen1 = ' '.join([data['citingBody'][i]['text'] for i in range(len(data['citingBody'])) if 'introduction' in data['citingBody'][i]['section'].lower()])
-        #sen1 = ' '.join([data['citingBody'][i]['text'] for i in range(len(data['citingBody'])) if data['citingBody'][i]['section'] == intro_section])
-
-        sen2_alltext = [' '.join([data['citedBody'][i]['text'] for i in range(len(data['citedBody']))])]
-        tfidf_sen2 = tfidf.transform(sen2_alltext)
-        feature_names = np.array(list(tfidf.get_feature_names_out()))
-        sen2 = get_top_tf_idf_words(tfidf_sen2, feature_names, 100)
-        #assert len(sen2) == 100, print(len(sen2))
-        if len(sen2) < 100:
-            print(f'Only {len(sen2)} TFIDF tokens')
-        for b in range(1, len(sen2)*2-1, 2): 
-            sen2.insert(b,'<TFIDF>')
-
-        sen2 = ' '.join(sen2)
-        
-
+       
     elif strategy == 'intro_entity':
         sen1 = ' '.join([data['citingBody'][i]['text'] for i in range(len(data['citingBody'])) if 'introduction' in data['citingBody'][i]['section'].lower()])
 
@@ -376,7 +294,6 @@ def get_context_input(data, model, tfidf, entity, strategy: str, n_match = 1, n_
         ent_sen2 = entity.transform(ent)
         feature_names = np.array(list(entity.get_feature_names()))
         sen2 = get_top_tf_idf_words(ent_sen2, feature_names, 100)
-        #print(sen2, len(sen2))
         n = len(sen2)
 
         if n < 100:
@@ -408,7 +325,7 @@ def get_context_input(data, model, tfidf, entity, strategy: str, n_match = 1, n_
         doc1 = doc1_abs + ' ' + doc1_sec
         doc2 = ' '.join([data['citedBody'][i]['text'] for i in range(len(data['citedBody'])) if ('related' not in data['citedBody'][i]['section'].lower()) and ('previous' not in data['citedBody'][i]['section'].lower())])
 
-        sen1, sen2 = cond_summaries(doc1, doc2, model = model, n_matches = n_match, n_sentences = n_sentence, semantic_search = False) # agg_mode = 'sum',
+        sen1, sen2 = cond_summaries(doc1, doc2, model = model, n_matches = n_match, n_sentences = n_sentence, semantic_search = False)
         #print(sen1, sen2)
 
         if title:

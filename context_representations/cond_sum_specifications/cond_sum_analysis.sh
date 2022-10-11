@@ -7,8 +7,6 @@ N_MATCHES=$2
 TITLE=$3
 SPLIT=$4
 MODEL=../cs_BERT/SentenceCSBert/
-# MODEL=SciBERT
-# MODEL=../cs_BERT/SciBERT-finetuned/
 
 if [ "$TITLE" = true ] ; then
   NAME=${N_SENTENCES}_${N_MATCHES}_t_${SPLIT}
@@ -57,10 +55,3 @@ else
 fi
 
 EOT
-
-# sh cond_sum.sh 5 3 true train
-
-#Full shape: (12375, 11)
-#Train: (7425, 11)
-#Val: (2475, 11)
-#Test: (2475, 11)

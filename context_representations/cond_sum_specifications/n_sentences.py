@@ -50,13 +50,13 @@ for s in ['train', 'test', 'val']:
         src_tgt_pairs.append({
             "citingPaperId": cleaned_citance["principal_id"],
             "citingTitle": cleaned_citance["principal_title"],
-            "citingAbstract": cleaned_citance["principal_abstracts"], #list2text(cleaned_citance["principal_abstracts"], 'principal_abstracts'),
-            "citingBody": cleaned_citance["principal_text"], #list2text(cleaned_citance["principal_text"], 'principal_text'),
+            "citingAbstract": cleaned_citance["principal_abstracts"],
+            "citingBody": cleaned_citance["principal_text"],
 
             "citedPaperId": cleaned_citance["cited_id"],
             "citedTitle": cleaned_citance["cited_title"],
-            "citedAbstract": cleaned_citance["cited_abstract"], #list2text(cleaned_citance["cited_abstract"], 'cited_abstract'),
-            "citedBody": cleaned_citance["cited_text"], #list2text(cleaned_citance["cited_text"], 'cited_text'),
+            "citedAbstract": cleaned_citance["cited_abstract"],
+            "citedBody": cleaned_citance["cited_text"],
 
             "citation_text": cleaned_citance["explanation"].replace("[BOS] ", ''),
             "intent": cleaned_citance["discourse"]
@@ -75,5 +75,3 @@ for s in ['train', 'test', 'val']:
         sentence_lengths.append(len(sentences1)+len(sentences2))
 
 print(f'Average number of sentences: {np.mean(sentence_lengths)} ({len(sentence_lengths)} samples)')
-
-# print(sum([1 for i in sentence_lengths if i < 8]))

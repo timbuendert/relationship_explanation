@@ -13,5 +13,3 @@
 #SBATCH --mail-type=BEGIN,END,FAIL
 
 ../python_env/bin/python3 4_merge_parts.py --filter --Reflection
-
-# 'Single_summ', 'Narrative_cite', 'Reflection', 'Multi_summ', 'Transition', 'Other'

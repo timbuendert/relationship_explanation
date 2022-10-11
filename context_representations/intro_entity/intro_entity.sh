@@ -2,7 +2,6 @@
 
 INTENT=reflection
 SPLIT=5000 
-#15000 /  single_summ: 10000
 
 N_START=$(($2 * ${SPLIT}))
 N_END=$((($2 * ${SPLIT}) + ${SPLIT}))
@@ -36,15 +35,3 @@ echo ${N_END}
     --outfile_type=hf
 
 EOT
-
-
-#sh intro_entity.sh train 1
-
-#Train: (192006, 11) -> 0-12
-#Val: (64002, 11) -> 0-4
-#Test: (64003, 11)
-
-#Full shape: (12375, 11)
-#Train: (7425, 11)
-#Val: (2475, 11)
-#Test: (2475, 11)

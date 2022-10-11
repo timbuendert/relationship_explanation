@@ -16,7 +16,7 @@ os.makedirs(PDF_PARSES_INPUT_DIR, exist_ok=True)
 with open('../CS_dataset/S2ORC/final_dict.pkl', 'rb') as f:
     download_linkss = pickle.load(f)
     
-# turn these into batches of work
+# batches of work
 batches = [{
     'input_metadata_url': download_links['metadata'],
     'input_metadata_path': os.path.join(METADATA_INPUT_DIR,
@@ -44,7 +44,7 @@ all_ref_paper_ids = list(set(all_ref_paper_ids))
 all_ref_paper_ids = list(map(int, all_ref_paper_ids))
 print(f'Loaded in total {len(all_ref_paper_ids)} cited paper IDs!')
 
-
+# iterate through all batches
 for i, batch in enumerate(batches):
     print('\nBatch {}:'.format(i))
 
@@ -56,9 +56,7 @@ for i, batch in enumerate(batches):
     subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
     print('Download Metadata completed.')
 
-
     with open("output/metadata_full_cited"+str(args.n)+".jsonl", "a") as acl_meta, gzip.open(batch['input_metadata_path'], 'rb') as f_meta:
-        # metadata_0.jsonl.gz | wc -l -> 1366661 lines!
         for n, line in enumerate(f_meta):
             if n % 10000 == 0:
                 print(n)

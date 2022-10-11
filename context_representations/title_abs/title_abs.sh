@@ -23,5 +23,4 @@ sbatch <<EOT
     --context_input_mode=title_abs  \
     --outfile_type=hf
 
-# train, val, test
 EOT

@@ -1,3 +1,5 @@
+# adapted from https://github.com/BradLin0819/Automatic-Citation-Text-Generation-with-Citation-Intent-Control/blob/main/utils/scicite_data_preprocess.py
+
 import os
 import json
 import logging
@@ -24,19 +26,16 @@ class DataPreprocessor:
         src_tgt_pairs = []
 
         for cleaned_citance in self._citances:
-
-            # filter out data without abstract
-            #if cleaned_citance["cited_abstract"][0]['text'].lower() not in ("", "abstract"):
             src_tgt_pairs.append({
                 "citingPaperId": cleaned_citance["principal_id"],
                 "citingTitle": cleaned_citance["principal_title"],
-                "citingAbstract": cleaned_citance["principal_abstracts"], #list2text(cleaned_citance["principal_abstracts"], 'principal_abstracts'),
-                "citingBody": cleaned_citance["principal_text"], #list2text(cleaned_citance["principal_text"], 'principal_text'),
+                "citingAbstract": cleaned_citance["principal_abstracts"],
+                "citingBody": cleaned_citance["principal_text"],
 
                 "citedPaperId": cleaned_citance["cited_id"],
                 "citedTitle": cleaned_citance["cited_title"],
-                "citedAbstract": cleaned_citance["cited_abstract"], #list2text(cleaned_citance["cited_abstract"], 'cited_abstract'),
-                "citedBody": cleaned_citance["cited_text"], #list2text(cleaned_citance["cited_text"], 'cited_text'),
+                "citedAbstract": cleaned_citance["cited_abstract"],
+                "citedBody": cleaned_citance["cited_text"],
 
                 "citation_text": cleaned_citance["explanation"].replace("[BOS] ", ''),
                 "intent": cleaned_citance["discourse"]
@@ -55,9 +54,9 @@ class DataPreprocessor:
                 
             else:
                 if cs_model == 'SciBERT':
-                    word_embedding_model = models.Transformer('allenai/scibert_scivocab_uncased', max_seq_length=512) #256
+                    word_embedding_model = models.Transformer('allenai/scibert_scivocab_uncased', max_seq_length=512)
                 else:
-                    word_embedding_model = models.Transformer(cs_model, max_seq_length=512) #256
+                    word_embedding_model = models.Transformer(cs_model, max_seq_length=512)
 
                 pooling_model = models.Pooling(word_embedding_model.get_word_embedding_dimension())
                 model_cs = SentenceTransformer(modules=[word_embedding_model, pooling_model])
@@ -69,12 +68,6 @@ class DataPreprocessor:
 
             with open("tfidf_vect.pkl", 'rb') as f:
                 tfidf = pickle.load(f)      
-            
-            # ngram_range = (1,1) -> only unigrams
-            #tfidf = TfidfVectorizer(stop_words = 'english')
-            #alltexts = [' '.join([sample['citedBody'][i]['text'] for i in range(len(sample['citedBody']))]) for sample in src_tgt_pairs]
-            #alltexts += [' '.join([sample['citingBody'][i]['text'] for i in range(len(sample['citingBody']))]) for sample in src_tgt_pairs]
-            #X = tfidf.fit_transform(alltexts)
             
             entity = 0
             model_cs = 0
@@ -95,10 +88,6 @@ class DataPreprocessor:
             model_cs = 0
 
         for src_tgt_pair in tqdm(src_tgt_pairs):
-            # Check if valid citation text
-            #if is_valid_citation_text(src_tgt_pair["citation_text"]):
-                #if intent is not None and intent != src_tgt_pair["intent"]:
-                #    continue
                 
             ## get contexts based on selected mode
             citing_src, cited_src = get_context_input(src_tgt_pair, model_cs, tfidf, entity, context_input_mode, n_match = context_n_matches, n_sentence = context_n_sentences, title = title)
@@ -234,23 +223,3 @@ if __name__ == '__main__':
             args.dataset_type, out_dir=args.out_dir, intent=args.intent,
             prepend_token=args.prepend_token, context_input_mode=args.context_input_mode,
             context_n_sentences=args.context_n_sentences, context_n_matches=args.context_n_matches, title = args.title, cs_model=args.cs_model)
-
-
-'''
-conda activate cctgm (local)
-
-python preprocessing/data_preprocess.py \
-    --input_file=data/original/train.jsonl \
-    --out_dir=data/preprocessed/single_summ \
-    --dataset_type=train2 \
-    --context_input_mode=cond_sum  \
-    --context_n_sentences=2 \
-    --context_n_matches=5 \
-    --n_start=0 \
-    --n_end=5 \
-    --outfile_type=hf
-
-
-# --prepend_token \
-# --intent <background/method/result>
-'''

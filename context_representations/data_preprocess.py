@@ -1,3 +1,5 @@
+# adapted from https://github.com/BradLin0819/Automatic-Citation-Text-Generation-with-Citation-Intent-Control/blob/main/utils/scicite_data_preprocess.py
+
 import os
 import json
 import logging
@@ -47,6 +49,7 @@ class DataPreprocessor:
                     prepend_token=False, context_input_mode='cond_sum', context_n_sentences = 2, context_n_matches = 2, title = False, cs_model = 'SciBERT'):
         preprocessd_src_tgt_pairs = []
 
+        # set models
         if context_input_mode == 'cond_sum':
             if cs_model == '../cs_BERT/SentenceCSBert/':
                 model_cs = SentenceTransformer(cs_model)
@@ -198,7 +201,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     os.makedirs(f'{args.out_dir}', exist_ok=True)
-
 
     dataset_processed = DataPreprocessor(args.input_file, args.n_start, args.n_end)
 
