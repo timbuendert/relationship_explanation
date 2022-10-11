@@ -14,7 +14,7 @@ sbatch <<EOT
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
 
-#SBATCH --mem=140gb
+#SBATCH --mem=40gb
 #SBATCH --time=3:00:00
 
 #SBATCH --mail-user=tim-moritz.buendert@student.uni-tuebingen.de
@@ -25,6 +25,3 @@ sbatch <<EOT
     --seed=${SEED}
 
 EOT
-
-# sh 1_neg_samples.sh 1000
-# for intro_entity: use 1_serialize_samples.py

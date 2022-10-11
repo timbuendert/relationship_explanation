@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 sbatch <<EOT
 #!/bin/sh
 

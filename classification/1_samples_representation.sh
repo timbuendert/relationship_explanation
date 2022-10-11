@@ -7,8 +7,6 @@ N_MATCHES=$4
 TITLE=$5
 
 CS_MODEL=../cs_BERT/SentenceCSBert/
-#CS_MODEL=SciBERT
-#CS_MODEL=../cs_BERT/SciBERT-finetuned/
 
 if [ "$TITLE" = true ] ; then
   NAME=${CONTEXT}_${SPLIT}_${N_SENTENCES}_${N_MATCHES}_t
@@ -31,7 +29,6 @@ sbatch <<EOT
 
 #SBATCH --mem=10gb
 #SBATCH --time=2:00:00
-# 100 gb, 4:00:00 for intro_entity
 
 #SBATCH --mail-user=tim-moritz.buendert@student.uni-tuebingen.de
 #SBATCH --mail-type=BEGIN,END,FAIL
@@ -62,6 +59,3 @@ else
 fi
 
 EOT
-
-# sh 1_samples_representation.sh {pos|neg} cond_sum 2 5 true
-# sh 1_samples_representation.sh {pos|neg} {title_abs|intro_entity} 0 0 false

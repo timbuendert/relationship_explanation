@@ -37,7 +37,6 @@ sbatch <<EOT
 #SBATCH --mail-user=tim-moritz.buendert@student.uni-tuebingen.de
 #SBATCH --mail-type=BEGIN,END,FAIL
 
-
 ../../python_env/bin/python3 opt_train.py \
     --model_type=opt \
     --model_name_or_path=${MODEL} \
@@ -75,11 +74,3 @@ echo "Training completed"
 echo "Testing completed"
 
 EOT
-
-
-# N_OBS=2678
-# --n_obs=${N_OBS} \
-
-
-# sh train_evaluate.sh reflection {cond_sum_1_5|title_abs|intro_entity}
-# if no intent specified: is single_summ

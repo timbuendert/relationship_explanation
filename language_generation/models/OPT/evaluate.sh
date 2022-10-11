@@ -45,12 +45,3 @@ sbatch <<EOT
 echo "Testing completed"
 
 EOT
-
-# For multiple samples: --n_obs=7, 1 fat node for 4h, 5 samples
-
-# N_OBS=2678
-# --n_obs=${N_OBS} \
-
-
-# sh evaluate.sh reflection cond_sum
-# if no intent specified: is single_summ

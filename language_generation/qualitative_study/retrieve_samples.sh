@@ -23,5 +23,3 @@ sbatch <<EOT
 ../python_env/bin/python3 retrieve_samples.py --n_samples=${N} --seed=${SEED}
 
 EOT
-
-# sh retrieve_samples.sh 30

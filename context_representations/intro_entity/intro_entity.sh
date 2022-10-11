@@ -10,14 +10,14 @@ sbatch <<EOT
 #!/bin/sh
 
 #SBATCH --job-name=ie_"$1"_"$2".job
-#SBATCH --output=out/ie_"$1"_"$2".out
+#SBATCH --output=ie_"$1"_"$2".out
 #SBATCH --export=All
 
 #SBATCH --partition=fat
 #SBATCH --nodes=1
 
-#SBATCH --mem=800gb
-#SBATCH --time=40:00:00
+#SBATCH --mem=60gb
+#SBATCH --time=20:00:00
 
 #SBATCH --mail-user=tim-moritz.buendert@student.uni-tuebingen.de
 #SBATCH --mail-type=BEGIN,END,FAIL

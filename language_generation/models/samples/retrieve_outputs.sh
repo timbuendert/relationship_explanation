@@ -21,7 +21,4 @@ sbatch <<EOT
 
 ../python_env/bin/python3 retrieve_outputs.py --n_samples=${N} --seed=${SEED}
 
-
 EOT
-
-# sh retrieve_outputs.sh {N}

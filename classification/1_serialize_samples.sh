@@ -23,5 +23,3 @@ sbatch <<EOT
 fi
 
 EOT
-
-# sh serialize_samples.sh {pos|neg}

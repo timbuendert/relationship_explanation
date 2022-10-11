@@ -74,10 +74,3 @@ echo "Training completed"
 echo "Testing completed"
 
 EOT
-
-# N_OBS=2678
-# --n_obs=${N_OBS} \
-
-
-# sh train_evaluate.sh reflection {cond_sum_1_5|title_abs|intro_entity}
-# if no intent specified: is single_summ

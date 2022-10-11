@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#MODEL_PATH=bert-base-uncased
-#MODEL_PATH=allenai/scibert_scivocab_uncased
 MODEL_PATH=../cs_BERT/SciBERT-finetuned/
 
 CONTEXT=$1
@@ -32,5 +30,3 @@ sbatch <<EOT
     --epochs=${EPOCHS} 
 
 EOT
-
-# sh 3_classification.sh {title_abs|intro_entity|cond_sum_2_5_t}

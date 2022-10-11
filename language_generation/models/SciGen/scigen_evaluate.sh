@@ -29,7 +29,6 @@ sbatch <<EOT
 #SBATCH --mail-user=tim-moritz.buendert@student.uni-tuebingen.de
 #SBATCH --mail-type=BEGIN,END,FAIL
 
-
 ../../python_env/bin/python3 scigpt2_generate.py \
     --model_type=gpt2 \
     --base_dir=../../contexts_${INTENT} \
@@ -46,8 +45,3 @@ sbatch <<EOT
 
 
 EOT
-
-#    --n_obs=5
-
-# sh scigen_evaluate.sh reflection {cond_sum_1_5|title_abs|intro_entity}
-# if no intent specified: is single_summ

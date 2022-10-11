@@ -25,13 +25,6 @@ WEIGHT_DECAY=0.05
 MAX_NEW_TOKENS=60
 TOP_P=0.9
 
-TYPICAL_P=0.9
-
-NUM_BEAMS=4
-NO_REPEAT_NGRAM=3
-LENGTH_PENALTY=2
-
-
 # Evaluation
 EXPERIMENT_PATH=experiments/${MODEL_NAME}_${INTENT}_${DATA_PROCESSING}
 OUTPUT_PATH=${EXPERIMENT_PATH}/test.output
@@ -85,10 +78,6 @@ sbatch <<EOT
     --per_device_eval_batch_size=${BATCH_SIZE} \
     --weight_decay=${WEIGHT_DECAY}
 
-#    --eval_beams=${NUM_BEAMS} \
-#    --generation_num_beams=${NUM_BEAMS} \
-
-
 echo "Training completed"
 
 
@@ -101,14 +90,6 @@ echo "Training completed"
     --max_new_tokens ${MAX_NEW_TOKENS} \
     --top_p ${TOP_P} 
 
-
-#    --length_penalty ${LENGTH_PENALTY} \
-#    --no_repeat_ngram_size ${NO_REPEAT_NGRAM} \
-#    --num_beams ${NUM_BEAMS}
-
 echo "Testing completed"
 
 EOT
-
-# sh train_eval.sh reflection {cond_sum_1_5|title_abs|intro_entity}
-# if no intent specified: is single_summ

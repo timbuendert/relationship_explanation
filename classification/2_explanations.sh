@@ -19,5 +19,3 @@ sbatch <<EOT
 ../python_env/bin/python3 2_explanations.py
 
 EOT
-
-# sh 2_explanations.sh 

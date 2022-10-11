@@ -25,5 +25,3 @@ sbatch <<EOT
     --model=${MODEL} \
     --context=${CONTEXT}
 EOT
-
-# sh eval_intent.sh reflection BART cond_sum

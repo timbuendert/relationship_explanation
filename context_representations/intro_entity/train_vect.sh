@@ -11,7 +11,7 @@ sbatch <<EOT
 
 #SBATCH --partition=fat
 #SBATCH --nodes=1
-#SBATCH --mem=500gb
+#SBATCH --mem=60gb
 #SBATCH --time=12:00:00
 
 #SBATCH --mail-user=tim-moritz.buendert@student.uni-tuebingen.de

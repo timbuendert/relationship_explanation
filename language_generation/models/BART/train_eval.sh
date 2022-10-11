@@ -25,13 +25,6 @@ WEIGHT_DECAY=0.05
 MAX_NEW_TOKENS=60
 TOP_P=0.9
 
-TYPICAL_P=0.9
-
-NUM_BEAMS=4
-NO_REPEAT_NGRAM=3
-LENGTH_PENALTY=2
-
-
 # Evaluation
 EXPERIMENT_PATH=experiments/${MODEL_NAME}_${INTENT}_${DATA_PROCESSING}
 OUTPUT_PATH=${EXPERIMENT_PATH}/test.output
@@ -58,36 +51,32 @@ sbatch <<EOT
 #SBATCH --mail-user=tim-moritz.buendert@student.uni-tuebingen.de
 #SBATCH --mail-type=BEGIN,END,FAIL
 
-#../../python_env/bin/python3 ${TRANSFORMERS_PATH}/finetune_trainer.py \
-#    --model_name_or_path ${BASE_MODEL} \
-#    --context_style ${DATA_PROCESSING} \
-#    --do_train \
-#    --do_eval \
-#    --task summarization \
-#    --data_dir ${DATA_DIR} \
-#    --logging_dir runs/${MODEL_NAME}_${INTENT}_${DATA_PROCESSING} \
-#    --save_strategy epoch \
-#    --evaluation_strategy epoch \
-#    --overwrite_output_dir \
-#    --predict_with_generate \
-#    --load_best_model_at_end \
-#    --metric_for_best_model loss \
-#    --seed=${SEED} \
-#    --save_total_limit 2 \
-#    --max_source_length=${MAX_SOURCE_LENGTH} \
-#    --val_max_target_length=${MAX_SOURCE_LENGTH} \
-#    --test_max_target_length=${MAX_SOURCE_LENGTH} \
-#    --output_dir ${OUTPUT_DIR} \
-#    --num_train_epochs=${NUM_EPOCHS} \
-#    --learning_rate ${LEARNING_RATE} \
-#    --warmup_ratio=${WARMUP_RATIO} \
-#    --per_device_train_batch_size=${BATCH_SIZE} \
-#    --per_device_eval_batch_size=${BATCH_SIZE} \
-#    --weight_decay=${WEIGHT_DECAY}
-
-#    --eval_beams=${NUM_BEAMS} \
-#    --generation_num_beams=${NUM_BEAMS} \
-
+../../python_env/bin/python3 ${TRANSFORMERS_PATH}/finetune_trainer.py \
+    --model_name_or_path ${BASE_MODEL} \
+    --context_style ${DATA_PROCESSING} \
+    --do_train \
+    --do_eval \
+    --task summarization \
+    --data_dir ${DATA_DIR} \
+    --logging_dir runs/${MODEL_NAME}_${INTENT}_${DATA_PROCESSING} \
+    --save_strategy epoch \
+    --evaluation_strategy epoch \
+    --overwrite_output_dir \
+    --predict_with_generate \
+    --load_best_model_at_end \
+    --metric_for_best_model loss \
+    --seed=${SEED} \
+    --save_total_limit 2 \
+    --max_source_length=${MAX_SOURCE_LENGTH} \
+    --val_max_target_length=${MAX_SOURCE_LENGTH} \
+    --test_max_target_length=${MAX_SOURCE_LENGTH} \
+    --output_dir ${OUTPUT_DIR} \
+    --num_train_epochs=${NUM_EPOCHS} \
+    --learning_rate ${LEARNING_RATE} \
+    --warmup_ratio=${WARMUP_RATIO} \
+    --per_device_train_batch_size=${BATCH_SIZE} \
+    --per_device_eval_batch_size=${BATCH_SIZE} \
+    --weight_decay=${WEIGHT_DECAY}
 
 echo "Training completed"
 
@@ -100,15 +89,6 @@ echo "Training completed"
     --max_new_tokens ${MAX_NEW_TOKENS} \
     --top_p ${TOP_P} 
 
-
-#    --length_penalty ${LENGTH_PENALTY} \
-#    --no_repeat_ngram_size ${NO_REPEAT_NGRAM} \
-#    --num_beams ${NUM_BEAMS}
-
 echo "Testing completed"
 
-
 EOT
-
-# sh train_eval.sh reflection {cond_sum_1_5|title_abs|intro_entity}
-# if no intent specified: is single_summ

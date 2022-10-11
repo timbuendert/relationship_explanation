@@ -25,5 +25,3 @@ sbatch <<EOT
 ../python_env/bin/python3 compare_intent_generation.py --model=${MODEL} --context=${CONTEXT} --n_samples=${N} --seed=${SEED}
 
 EOT
-
-# sh compare_intent_generation.sh OPT cond_sum 3
