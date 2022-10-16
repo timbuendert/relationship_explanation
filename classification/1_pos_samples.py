@@ -14,14 +14,13 @@ for i in range(4):
 
 print(f'All samples: {samples.shape}')
 
-# load samples
+# load labels
 with open(f'data/labels.pkl', 'rb') as f:
     labels = pickle.load(f)
 
+# keep only labels with positive relationship
 ind_samples = [i for i in range(len(labels)) if labels[i] > -1]
 print(f'Labels of dataset: {len(ind_samples)}')
-
-# get samples where positive relationship is present
 samples_dataset = samples.iloc[ind_samples]
 print(f'Final dataset: {samples_dataset.shape}')
 

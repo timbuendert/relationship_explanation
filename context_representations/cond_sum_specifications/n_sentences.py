@@ -69,8 +69,8 @@ for s in ['train', 'test', 'val']:
         doc1 = doc1_abs + ' ' + doc1_sec
         doc2 = ' '.join([src_tgt_pair['citedBody'][i]['text'] for i in range(len(src_tgt_pair['citedBody'])) if ('related' not in src_tgt_pair['citedBody'][i]['section'].lower()) or ('previous' not in src_tgt_pair['citedBody'][i]['section'].lower())])
         
-        sentences1 = text2sentences(doc1)
-        sentences2 = text2sentences(doc2)
+        sentences1 = text2sentences(doc1) # sentences to choose from using cond_sum
+        sentences2 = text2sentences(doc2) # -"-
 
         sentence_lengths.append(len(sentences1)+len(sentences2))
 

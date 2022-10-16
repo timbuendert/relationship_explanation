@@ -43,7 +43,7 @@ nlp.add_pipe(component)
 all_entities = []
 for abs, title in zip(all_cited_abstracts, all_cited_titles):
     text = f"Title: {title} Section: Abstract {abs}"
-    doc = nlp(text)
+    doc = nlp(text) # retrieve entities
     if len(list(doc.ents)) > 2:
         all_entities += [' '.join([str(i) for i in list(doc.ents)])]
 

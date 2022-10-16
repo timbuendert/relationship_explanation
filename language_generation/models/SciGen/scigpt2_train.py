@@ -102,10 +102,7 @@ class TextDataset(Dataset):
                     tokenized_txt2 = fit_to_block_size( tokenized_text, 1024,  tokenizer.pad_token, eot_token )
                     tokenized_text = tokenizer.convert_tokens_to_ids(tokenized_txt2)
 
-
-
-                    #Pad out the lm_labels to only compute loss on the target
-                    
+                    #Pad out the lm_labels to only compute loss on the target                    
                     padded = np.array(tokenized_text)
                     masked = np.array(tokenized_text)
                     padded[padded == tokenizer.pad_token_id] = -100

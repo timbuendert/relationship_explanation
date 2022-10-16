@@ -11,12 +11,11 @@ PDF_PARSES_INPUT_DIR = 'pdf_parses/'
 os.makedirs(METADATA_INPUT_DIR, exist_ok=True)
 os.makedirs(PDF_PARSES_INPUT_DIR, exist_ok=True)
 
-
 # shards
 with open('../CS_dataset/S2ORC/final_dict.pkl', 'rb') as f:
     download_linkss = pickle.load(f)
     
-# batches of work
+# batches of papers
 batches = [{
     'input_metadata_url': download_links['metadata'],
     'input_metadata_path': os.path.join(METADATA_INPUT_DIR,
@@ -35,6 +34,7 @@ args = parser.parse_args()
 batches = batches[args.batches_start : args.batches_end]
 print(f"{len(batches)} batch(es) considered (from {args.batches_start} to {args.batches_end})")
 
+# load all IDs
 all_ref_paper_ids = []
 for i in range(10):    
     with open(f'../related_works/all_ref_paper_ids{i}.pkl', 'rb') as f:
@@ -65,7 +65,6 @@ for i, batch in enumerate(batches):
                 json.dump(metadata_dict, acl_meta)
                 acl_meta.write("\n")
 
-
     # create a lookup for the pdf parse based on paper ID
     with open("output/pdf_parses_full_cited"+str(args.n)+".jsonl", "a") as acl_pdf, gzip.open(batch['input_pdf_parses_path'], 'rb') as f_pdf:
         for n, line in enumerate(f_pdf):
@@ -78,4 +77,3 @@ for i, batch in enumerate(batches):
 
     os.remove(batch['input_metadata_path'])
     os.remove(batch['input_pdf_parses_path'])
-

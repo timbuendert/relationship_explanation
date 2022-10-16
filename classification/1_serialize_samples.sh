@@ -20,6 +20,5 @@ sbatch <<EOT
 
 ../python_env/bin/python3 1_serialize_samples.py \
     --split=${SPLIT} 
-fi
 
 EOT

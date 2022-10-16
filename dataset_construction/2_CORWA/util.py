@@ -87,7 +87,7 @@ def to_BIO(label_seqs):
         new_label_para = []
         prev = ""
         for label in label_para:
-            if label != "none":  # "none" is O, remain unchanged.
+            if label != "none":  # "none" is O, remain unchanged
                 if label == prev:
                     new_label = "I_" + label
                 else:
@@ -281,18 +281,6 @@ def read_discourse_labels(annotations, all_text, discourse_label_types):
     assert len(
         discourse_labels) == N_sent, "Please check if every [BOS] token is annotated."
     return discourse_labels
-
-
-# def validate_span_annotation(annotations):
-#    in_span = False
-#    for ann in annotations:
-#        if ann[-2] == 'B_span':
-#            assert not in_span, "Missing E_span"
-#            in_span = True
-#        elif ann[-2] == 'E_span':
-#            assert in_span, "Missing S_span"
-#            in_span = False
-#    assert not in_span, "Mssing the last E_span"
 
 def validate_span_annotation(annotations):
     stack = []
@@ -497,10 +485,6 @@ def removeAccents(string):
     string = re.sub(u"[ñń]", 'n', string)
     return string
 
-
-# def removeAccents(string):
-#    return str(unicodedata.normalize('NFKD', string).encode('ASCII', 'ignore'))
-
 def citation_prediction_to_annotation_paragraph(dataset, citation_predictions,
                                                 tokenizer):
     def post_process(annotations):
@@ -671,18 +655,6 @@ def discourse_prediction_to_annotation_paragraph(dataset, discourse_predictions,
             pointer += len("[BOS]")
         all_annotations.append(annotations)
     return all_annotations
-
-
-# def merge_annotations_by_doc(all_discourses, all_citations, all_spans):
-#    merged_annotations = []
-#    for discourse, citations, spans in zip(all_discourses, all_citations, all_spans):
-#        annotations = discourse + citations + spans
-#        this_merged = []
-#        for i, annotation in enumerate(annotations):
-#            start, end, label, text = annotation
-#            this_merged.append(("T"+str(i+1), " ".join([label, str(start), str(end)]), text))
-#        merged_annotations.append(this_merged)
-#    return merged_annotations
 
 def merge_annotations_by_doc(*all_annotations):
     merged_annotations = []

@@ -6,7 +6,7 @@
 
 #SBATCH --partition=fat
 #SBATCH --nodes=1
-#SBATCH --mem=450gb
+#SBATCH --mem=150gb
 #SBATCH --time=02:00:00
 
 #SBATCH --mail-user=tim-moritz.buendert@student.uni-tuebingen.de

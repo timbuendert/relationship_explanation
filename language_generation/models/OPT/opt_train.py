@@ -134,7 +134,7 @@ def load_and_cache_examples(args, tokenizer, evaluate=False):
         if n!= 0:
             dataset.examples = dataset.examples[:-n]
     
-    #Evaluate; cap it at max_eval_steps. "Shuffle" it, but keep the seed static so its consistent I guess. Super hacky.
+    #Evaluate; cap it at max_eval_steps. "Shuffle" it, but keep the seed static so its consistent
     else:
         eval_rng = np.random.RandomState(2)
         eval_rng.shuffle( dataset.examples )

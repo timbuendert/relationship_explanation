@@ -19,7 +19,6 @@ sbatch <<EOT
 #SBATCH --mail-user=tim-moritz.buendert@student.uni-tuebingen.de
 #SBATCH --mail-type=BEGIN,END,FAIL
 
-
 ../python_env/bin/python3 retrieve_samples.py --n_samples=${N} --seed=${SEED}
 
 EOT

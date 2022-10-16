@@ -22,7 +22,7 @@ samples = pd.read_json(path_or_buf='samples_all.jsonl', lines=True, dtype= {'pri
 print(f'Shape of samples: {samples.shape}')
 
 argparser = argparse.ArgumentParser()
-argparser.add_argument('--type', type=str)
+argparser.add_argument('--type', type=str) # types: p_title, p_text, c_title, c_text
 args = argparser.parse_args()
 
 if args.type == 'p_title':

@@ -112,9 +112,9 @@ class JointParagraphTagger(nn.Module):
             self.bert = AutoModel.from_pretrained(bert_path)
             self.bert.resize_token_embeddings(tokenizer_len)
             self.bert_dim = self.bert.config.hidden_size # bert_dim
-        self.discourse_criterion = nn.CrossEntropyLoss(ignore_index = 0) #self.discourse_label_size)
-        self.citation_criterion = nn.CrossEntropyLoss(ignore_index = 0) # self.citation_label_size)
-        self.span_criterion = nn.CrossEntropyLoss(ignore_index = 0) #self.span_label_size)
+        self.discourse_criterion = nn.CrossEntropyLoss(ignore_index = 0)
+        self.citation_criterion = nn.CrossEntropyLoss(ignore_index = 0)
+        self.span_criterion = nn.CrossEntropyLoss(ignore_index = 0)
         self.dropout = dropout
         self.word_attention = WordAttention(self.bert_dim, self.bert_dim, dropout=dropout)
         self.discourse_linear = ClassificationHead(self.bert_dim, self.discourse_label_size, hidden_dropout_prob = dropout)

@@ -43,5 +43,4 @@ sbatch <<EOT
     --top_k=${TOP_K} \
     --top_p=${TOP_P}
 
-
 EOT

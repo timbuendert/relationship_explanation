@@ -1256,7 +1256,7 @@ def get_data_context(i, ind = 0):
         output.append(l)
     return np.array(output)
 
-
+# compute scores
 for i, c in enumerate(contexts):
     data = get_data_context(i, ind = 0)
     confidence_levels = get_data_context(i, ind = 1)
@@ -1278,8 +1278,7 @@ for i, c in enumerate(contexts):
     print(f'Human Scores for {c}: \n{final_score} with respective standard error estimates {std_error}\n{overall_score:.3f}\n')
 
 
-# print correlation coefficients
-
+# print correlation coefficients of jurors
 juror_ratings = np.array([jurors[i][0].flatten() for i in range(len(jurors))])
 print(juror_ratings, juror_ratings.shape)
 print(np.corrcoef(np.array(juror_ratings)))

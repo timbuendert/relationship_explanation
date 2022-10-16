@@ -7,7 +7,6 @@ import pickle
 
 logger = logging.getLogger(__name__)
 
-
 class DataPreprocessor:
     def __init__(self, samples, n_start, n_end):
         self._citances = samples
@@ -57,7 +56,6 @@ class DataPreprocessor:
 
 
         elif context_input_mode == 'intro_entity':
-
             with open("../contexts_single_summ/intro_entity/tfidf_vect.pkl", 'rb') as f:
                 tfidf = pickle.load(f)      
             
@@ -154,6 +152,7 @@ if __name__ == '__main__':
         tgt_directory = f'{args.context}'
     os.makedirs(f'data/{tgt_directory}', exist_ok=True)
 
+    # load samples
     if args.context == 'intro_entity':
         if args.split == 'pos':
             samples = pd.read_json('data/pos_samples_ie.json', orient='records')

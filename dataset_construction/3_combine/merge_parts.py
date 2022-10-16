@@ -26,7 +26,7 @@ for i in range(4):
         gc.collect()
 
 '''
-# print random sampels from discourses
+# print random samples from discourses
 for d in list(set(samples['discourse'])):
     print('\n', d)
     samples_d = samples[samples['discourse'] == d].reset_index(drop = True)
@@ -41,7 +41,7 @@ if not args.filter:
     c_discourses = Counter(samples['discourse'])
     c_spantype = Counter(samples['span_type'])
 
-    # print distributions
+    # print distributions of discourses and spantypes
     print([(i, c_discourses[i] / len(samples['discourse']) * 100.0, c_discourses[i]) for i, count in c_discourses.most_common(10)])
     print([(i, c_spantype[i] / len(samples['span_type']) * 100.0, c_spantype[i]) for i, count in c_spantype.most_common()], '\n')
 
@@ -53,9 +53,9 @@ if not args.filter:
 
 
 if args.filter: # Filter citations per intent
-
     output_name = str(args.intent).lower()
     
+    # export entire dataset
     samples.to_json(f'data/dataset_{output_name}.jsonl', orient = "records", lines=True)
 
     train_data, val_data, test_data = np.split(samples.sample(frac=1, random_state=42), [int(.6*samples.shape[0]), int(.8*samples.shape[0])])
@@ -63,6 +63,7 @@ if args.filter: # Filter citations per intent
     print(f'Val: {val_data.shape}') # 20%
     print(f'Test: {test_data.shape}') # 20%
 
+    # export dataset splits
     train_data.to_json(f'data/{output_name}_train.jsonl', orient = "records", lines=True)
     val_data.to_json(f'data/{output_name}_val.jsonl', orient = "records", lines=True)
     test_data.to_json(f'data/{output_name}_test.jsonl', orient = "records", lines=True)
@@ -71,5 +72,6 @@ if args.filter: # Filter citations per intent
                   'test':list(test_data.index),
                   'val':list(val_data.index)}
 
+    # export indices of splits
     with open(f'data/{output_name}_splits_idx.pkl', 'wb') as f:
         pickle.dump(splits_idx, f)

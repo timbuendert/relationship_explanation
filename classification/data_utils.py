@@ -156,8 +156,7 @@ def process_output_comp(sel_sent, doc):
     sel_sentences = [s for n,s in enumerate(sentences) if n in sel_idx]
     return ' '.join(sel_sentences)
 
-def process_output(sentences, max_idx, n_sentences): # input sentences1 or ?max_indices 
-    #sentences = text2sentences(doc)
+def process_output(sentences, max_idx, n_sentences):
     n_s = len(sentences)
 
     all_seq = [list(range(a,a+n_sentences)) for a in range(n_s-(n_sentences-1) +1)]
@@ -168,16 +167,8 @@ def process_output(sentences, max_idx, n_sentences): # input sentences1 or ?max_
         except IndexError:
             print(j, all_seq, n_s)
     sel_idx = list(set(sel_idx))
-    #print(sel_idx)
 
     sel_sentences = [s for n,s in enumerate(sentences) if n in sel_idx]
-
-    #for n,s in enumerate(sentences):
-    #    if n in sel_idx:
-    #        print(s, '\n')
-    
-    #print(' '.join(sel_sentences))
-
     return ' '.join(sel_sentences)
 
 def check_token(token, exst_tokens):
@@ -207,10 +198,9 @@ def check_token(token, exst_tokens):
 
     
 def get_top_tf_idf_words(response, feature_names, top_n=2, exst_tokens = None):
-    #sorted_nzs = np.argsort(response.data)[:-(top_n+100):-1]
     sorted_nzs = np.argsort(response.data)[::-1]
     rel_tokens = list(feature_names[response.indices[sorted_nzs]])
-    tokens = [t for t in rel_tokens if check_token(t, exst_tokens)][:top_n] #100
+    tokens = [t for t in rel_tokens if check_token(t, exst_tokens)][:top_n]
     return tokens
 
 def check_section(section):
@@ -240,10 +230,9 @@ def cond_summaries(doc1: str, doc2: str, model, n_sentences = 1, n_matches = 1, 
     embeddings1 = model.encode(sentences1, convert_to_tensor=True)
     embeddings2 = model.encode(sentences2, convert_to_tensor=True)
  
-    cosine_scores = util.cos_sim(embeddings1, embeddings2) # or via normalizing vetors & dot_product -> more efficient?
+    cosine_scores = util.cos_sim(embeddings1, embeddings2)
     
-    if agg_mode is not None: # or average/sum over all cosine similarities of other doc with this one sentence?
-        # worth experimenting
+    if agg_mode is not None: # or average/sum over all cosine similarities of other doc with this one sentence
         if agg_mode == 'mean':
             agg_doc1 = torch.mean(cosine_scores, dim = 1) # or sum
             agg_doc2 = torch.mean(cosine_scores, dim = 0) # or sum
@@ -253,16 +242,11 @@ def cond_summaries(doc1: str, doc2: str, model, n_sentences = 1, n_matches = 1, 
             
         _, idx_1 = torch.topk(agg_doc1, n_matches)
         _, idx_2 = torch.topk(agg_doc2, n_matches)
-        
-        #sel_sent1 = [sentences1[idx_1[j]] for j in range(len(idx_1))]
-        #sel_sent2 = [sentences2[idx_2[k]] for k in range(len(idx_2))]
     
     
     elif semantic_search == True:
-        # semantic search (https://www.youtube.com/watch?v=ewlCCB7EFPs; https://www.sbert.net/examples/applications/semantic-search/README.html)
-        #embeddings1 = embeddings1.to('cuda')
+        # semantic search (https://www.sbert.net/examples/applications/semantic-search/README.html)
         embeddings1 = util.normalize_embeddings(embeddings1)
-        #embeddings2 = embeddings2.to('cuda')
         embeddings2 = util.normalize_embeddings(embeddings2)
         
         # can add following parameters: query_chunk_size, corpus_chunk_size, score_function
@@ -271,30 +255,18 @@ def cond_summaries(doc1: str, doc2: str, model, n_sentences = 1, n_matches = 1, 
         scores = [hits[j][0]['score'] for j in range(len(hits))]
         sort_indices = np.array(scores).argsort().tolist()[::-1]
         idx_1 = sort_indices[:n_matches]
-        idx_2 = [hits[i][0]['corpus_id'] for i in idx_1]
-        
-        #sel_sent1 = [sentences1[idx_1[j]] for j in range(len(idx_1))]
-        #sel_sent2 = [sentences2[idx_2[k]] for k in range(len(idx_2))]
-            
+        idx_2 = [hits[i][0]['corpus_id'] for i in idx_1]        
     
     else:
         _, i = torch.topk(cosine_scores.flatten(), n_matches) # or see: https://www.sbert.net/docs/usage/semantic_textual_similarity.html
         max_indices = np.array(np.unravel_index(i.cpu().numpy(), cosine_scores.shape)).T        
-
-        # for case n = 1: 
-        #max_value = torch.amax(cosine_scores)
-        #max_indices = (cosine_scores == max_value).nonzero(as_tuple=True)
                         
-        sel_sent1 = [sentences1[max_indices[j,0]] for j in range(max_indices.shape[0])]
-        sel_sent2 = [sentences2[max_indices[k,1]] for k in range(max_indices.shape[0])]
-
         idx_1 = max_indices[:,0]
         idx_2 = max_indices[:,1]
             
 
-    cond_sent1 = process_output(text2sentences(doc1), idx_1, n_sentences) #doc1
+    cond_sent1 = process_output(text2sentences(doc1), idx_1, n_sentences)
     cond_sent2 = process_output(text2sentences(doc2), idx_2, n_sentences)
-
     
     return cond_sent1, cond_sent2
 
@@ -357,7 +329,7 @@ def get_context_input(data, model, tfidf, entity, strategy: str, n_match = 1, n_
         doc1 = doc1_abs + ' ' + doc1_sec
         doc2 = ' '.join([data['citedBody'][i]['text'] for i in range(len(data['citedBody'])) if ('related' not in data['citedBody'][i]['section'].lower()) and ('previous' not in data['citedBody'][i]['section'].lower())])
 
-        sen1, sen2 = cond_summaries(doc1, doc2, model = model, n_matches = n_match, n_sentences = n_sentence, semantic_search = False) # agg_mode = 'sum',
+        sen1, sen2 = cond_summaries(doc1, doc2, model = model, n_matches = n_match, n_sentences = n_sentence, semantic_search = False)
 
         if title:
             doc1_title = data['citingTitle']

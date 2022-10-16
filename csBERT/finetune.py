@@ -20,18 +20,15 @@ dataset = Dataset.from_dict({'text': texts})
 train_dataset, validation_dataset = dataset.train_test_split(test_size=0.3, seed = 42).values()
 dataset = DatasetDict({'train': train_dataset, 'val': validation_dataset})
 
-
 # Load tokenizer and Model for  Masked-language Modelling
 tokenizer = AutoTokenizer.from_pretrained('allenai/scibert_scivocab_uncased', use_fast=True)
 model = AutoModelForMaskedLM.from_pretrained('allenai/scibert_scivocab_uncased')
-
 
 # tokenize input texts
 def tokenize_function(examples):
     return tokenizer(examples["text"])
 
 tokenized_datasets = dataset.map(tokenize_function, batched=True, remove_columns=["text"])
-
 
 # create blocks of input tokens
 block_size = 128
@@ -73,9 +70,7 @@ trainer = Trainer(
 )
 
 ####### TRAINING
-# n = 100 -> 2:30m for 3 epochs
-
-print('TRAINING')
+print('Training')
 train_result = trainer.train(resume_from_checkpoint = True) # or resume from path / resume_from_checkpoint = True
 
 trainer.save_model(args.output_dir)

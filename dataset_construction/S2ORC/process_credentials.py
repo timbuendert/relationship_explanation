@@ -22,5 +22,6 @@ print(f'Number of pdf-parses URLs: {len(pdfs)}')
 
 final_dict = [{"metadata": metadata[i], "pdf_parses": pdfs[i]} for i in range(len(pdfs))]
 
+# export
 with open('S2ORC/final_dict.pkl', 'wb') as f:
     pickle.dump(final_dict, f)

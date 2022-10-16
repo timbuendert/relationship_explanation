@@ -83,7 +83,7 @@ class DataPreprocessor:
 
         for src_tgt_pair in tqdm(src_tgt_pairs):
                 
-            ## get contexts based on selected mode
+            # get contexts based on selected mode
             citing_src, cited_src = get_context_input(src_tgt_pair, model_cs, tfidf, entity, context_input_mode, n_match = context_n_matches, n_sentence = context_n_sentences, title = title)
             
             # put #REF instead of reference

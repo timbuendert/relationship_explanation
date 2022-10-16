@@ -59,10 +59,8 @@ def process_reference_marker(text):
 
     # Handle APA citation
     processed_text = process_apa_citation(processed_text)
-
     
     tokens = processed_text.split()
-
     drop_idx = []
     
     for n,t in enumerate(tokens):
@@ -266,7 +264,7 @@ def cond_summaries(doc1: str, doc2: str, model, n_sentences = 1, n_matches = 1, 
         idx_1 = max_indices[:,0]
         idx_2 = max_indices[:,1]
             
-    cond_sent1 = process_output(text2sentences(doc1), idx_1, n_sentences) #doc1
+    cond_sent1 = process_output(text2sentences(doc1), idx_1, n_sentences)
     cond_sent2 = process_output(text2sentences(doc2), idx_2, n_sentences)
 
     return cond_sent1, cond_sent2

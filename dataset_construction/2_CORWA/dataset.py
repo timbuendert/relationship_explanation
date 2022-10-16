@@ -1,9 +1,5 @@
 from glob import glob
-from collections import defaultdict
-
 from torch.utils.data import Dataset
-from tqdm import tqdm
-
 from util import *
 
 class JointPredictionDataset(Dataset):
@@ -84,4 +80,3 @@ class JointPredictionDataset(Dataset):
 
     def __getitem__(self, idx):
         return self.samples[idx]
-    

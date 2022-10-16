@@ -222,6 +222,7 @@ for i in trange(10):
         samples_all = pd.concat([samples_all, samples], ignore_index=True)
 
 print(samples_all.head())
-print(f'Final shape: {samples_all.shape}') # ca. 1,634,806 before; 35,000 for NLP
+print(f'Final shape: {samples_all.shape}')
 
+# export
 samples_all.to_json(f'samples_all.jsonl', orient = "records", lines=True)

@@ -1,7 +1,5 @@
 import pandas as pd
 import pickle
-import numpy as np
-from collections import Counter
 import gc 
 import argparse
 from tqdm import trange
@@ -85,6 +83,7 @@ samples = samples[samples['explanation'].apply(lambda x: len(x) > 25)].reset_ind
 
 print(f'Shape of samples after filtering (2): {samples.shape}')
 
+# only keep papers which contain either conclusion and/or introduction section (important for Cond-Sum context construction)
 keep_idx = []
 for i in trange(samples.shape[0]):
     conc = False
@@ -103,5 +102,5 @@ for i in trange(samples.shape[0]):
 samples = samples.iloc[keep_idx,:]
 print(f'Shape of samples after filtering (3): {samples.shape}')
 
-
+# export
 samples.to_json(f'dataset_cs{args.n}.json', orient = "records")

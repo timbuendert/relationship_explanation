@@ -16,7 +16,7 @@ os.makedirs(PDF_PARSES_INPUT_DIR, exist_ok=True)
 with open('S2ORC/final_dict.pkl', 'rb') as f:
     download_linkss = pickle.load(f)
     
-# turn these into batches of work
+# batches of papers
 batches = [{
     'input_metadata_url': download_links['metadata'],
     'input_metadata_path': os.path.join(METADATA_INPUT_DIR,
@@ -65,13 +65,12 @@ for i, batch in enumerate(batches):
             for field in metadata_dict['mag_field_of_study']:
                 if 'computer' in field.lower():
                     check_cs = True
-            
 
             # only care about ACL anthology and CS papers
             if (not metadata_dict['acl_id']) and (not check_cs):
                 continue
 
-            # and we want only papers with resolved outbound citations
+            # want only papers with resolved outbound citations
             if not metadata_dict['has_outbound_citations']:
                 continue
 
@@ -97,6 +96,3 @@ for i, batch in enumerate(batches):
 
     os.remove(batch['input_metadata_path'])
     os.remove(batch['input_pdf_parses_path'])
-
-
-# python filter_ACL_S2ORC.py --batches_start=1 --batches_end=1 --n=1

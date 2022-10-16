@@ -18,5 +18,3 @@ sbatch <<EOT
 ../python_env/bin/python3 4_add_data.py --type=$1
 
 EOT
-
-# types: p_title, p_text, c_title, c_text

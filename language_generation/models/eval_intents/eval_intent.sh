@@ -24,4 +24,5 @@ sbatch <<EOT
     --intent=${INTENT} \
     --model=${MODEL} \
     --context=${CONTEXT}
+    
 EOT

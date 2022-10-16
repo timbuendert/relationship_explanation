@@ -25,6 +25,7 @@ args = parser.parse_args()
 tgt_path = f'classifications/{args.context}'
 os.makedirs(tgt_path, exist_ok=True)
 
+
 # load data
 
 with open(f'data/labels.pkl', 'rb') as f:
@@ -162,6 +163,7 @@ def train(model, train_data, val_data, learning_rate, epochs):
         total_loss_val = 0
         total_test_f1 = 0
 
+        # validation
         with torch.no_grad():
             for val_input, val_label in val_dataloader:
                 val_label = val_label.to(device)

@@ -61,5 +61,6 @@ with open(f'related_work{args.n}.jsonl',"r") as f_pdf:
 
 print('Number of ref ids:', len(all_ref_paper_ids))
 
+# export
 with open(f'related_works/all_ref_paper_ids{args.n}.pkl', 'wb') as f:
     pickle.dump(list(all_ref_paper_ids), f)

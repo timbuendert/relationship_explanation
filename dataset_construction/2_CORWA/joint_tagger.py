@@ -1,11 +1,7 @@
-import argparse
 
 import torch
-import jsonlines
-import os
 
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 from transformers import AutoModel, AutoTokenizer, get_cosine_schedule_with_warmup
 from tqdm import tqdm
@@ -24,18 +20,7 @@ from dataset import JointPredictionDataset
 
 import logging
 
-import pickle
-
-#class dummyArgs():
-#    def __init__(self):
-#        pass
-    
-#    def set_args(self, args_dict):
-#        for k, v in args_dict.items():
-#            setattr(self, k, v)
-
-#args = dummyArgs()
-            
+           
 def reset_random_seed(seed):
     np.random.seed(seed)
     random.seed(seed)
@@ -132,24 +117,19 @@ def token_idx_by_sentence(input_ids, sep_token_id, padding_idx=-1):
     mask = (indices_by_batch != padding_idx)
     return batch_indices.long(), indices_by_batch.long(), mask.long()
 
+
 def run_prediction(input_dict, tokenizer, args):
-    #args.set_args(arg_dict)
     logging.getLogger("transformers.tokenization_utils_base").setLevel(logging.ERROR)
     reset_random_seed(12345)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    #tokenizer = AutoTokenizer.from_pretrained(args.repfile)
-    #additional_special_tokens = {'additional_special_tokens': ['[BOS]']}
-    #tokenizer.add_special_tokens(additional_special_tokens)
 
     if args.intent:
         dev_set = JointPredictionDataset(input_dict, tokenizer, MAX_SENT_LEN = args.MAX_SENT_LEN, intent = args.intent)
     else:   
         dev_set = JointPredictionDataset(input_dict, tokenizer, MAX_SENT_LEN = args.MAX_SENT_LEN)
 
-
-
-    model = JointParagraphTagger(args.repfile, len(tokenizer),args.dropout)#.to(device)
-    model.load_state_dict(torch.load(args.checkpoint, map_location=torch.device('cpu'))) ##
+    model = JointParagraphTagger(args.repfile, len(tokenizer),args.dropout)
+    model.load_state_dict(torch.load(args.checkpoint, map_location=torch.device('cpu')))
     print("Model loaded!")
     
     model = model.to(device)
@@ -159,12 +139,4 @@ def run_prediction(input_dict, tokenizer, args):
     span_predictions = fix_BIO(span_predictions)
     span_predictions = post_process_spans(span_predictions, citation_predictions)
     
-    #with open("discourse_predictions.pkl","wb") as f:
-    #    pickle.dump(discourse_predictions, f)
-    #with open("citation_predictions.pkl","wb") as f:
-    #    pickle.dump(citation_predictions, f)
-    #with open("span_predictions.pkl","wb") as f:
-    #    pickle.dump(span_predictions, f)
-    #with open("dataset.pkl","wb") as f:
-    #    pickle.dump(dev_set, f)
     return discourse_predictions, citation_predictions, span_predictions, dev_set
