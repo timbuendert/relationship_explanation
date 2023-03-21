@@ -5,9 +5,9 @@ This repository contains the practical implementations corresponding to the grad
 ![Schematic Overview of Conditional Summary Context Construction](https://github.com/timbuendert/relationship_explanation/blob/main/context_representations/cond_sum/cond_sum_schema.png)
 
 For more details, please [contact me](mailto:tim.moritz.buendert@googlemail.com) to receive the entire thesis.
+ 
 
-
-The folder **demo** contains a [demo notebook](https://github.com/timbuendert/relationship_explanation/blob/main/demo/explaining_relationships.ipynb) with a practical implementation of the developed methods and invites for further experiments. For more details, please refer to the corresponding folder.
+The demo notebook [**demo_notebook.ipynb**](https://github.com/timbuendert/relationship_explanation/blob/main/demo_notebook.ipynb) contains an exemplary application of the methods discussed and developed in the corresponding paper and invites for further experiments. To use it and experiment with the fine-tuned models, please download the corresponding Python module <b>relationship_explanation</b> from [Google Drive](https://drive.google.com/drive/folders/1uGxfWfnK_PtNfKEfuc2EbCuEQpZpjnQJ?usp=sharing).
 
 
 Generally, to use the provided scripts, please create a new `Python 3` environment and execute the following command to to install all packages and dependencies.
